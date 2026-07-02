@@ -1,0 +1,1630 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Treppenhaus-Check · BEROLINA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --green:#1B6E4A;
+  --green-dark:#124F35;
+  --green-pale:#E7F2EC;
+  --orange:#EE8B22;
+  --orange-dark:#C96A0D;
+  --paper:#FCFCFA;
+  --card:#FFFFFF;
+  --ink:#20281F;
+  --ink-soft:#647065;
+  --line:#DCE5DE;
+  --ok:#2F8F5B;
+  --ok-bg:#E1F3E8;
+  --warn:#DDA032;
+  --warn-bg:#FBF0DB;
+  --bad:#D24B36;
+  --bad-bg:#FBE3DE;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:'Inter', sans-serif;
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,.display{font-family:'Poppins', sans-serif;}
+#app{max-width:640px;margin:0 auto;padding:16px 16px 90px;min-height:100vh;}
+
+.logo-mark{width:34px;height:34px;flex-shrink:0;position:relative;}
+.logo-mark svg{width:100%;height:100%;display:block;}
+
+.masthead{
+  display:flex;align-items:center;gap:10px;justify-content:space-between;
+  background:var(--green);
+  border-radius:10px;
+  padding:12px 14px;margin-bottom:16px;
+  color:#fff;
+}
+.masthead .left{display:flex;align-items:center;gap:10px;}
+.masthead .brand{font-family:'Poppins',sans-serif;font-weight:800;font-size:16px;line-height:1.15;text-transform:uppercase;letter-spacing:0.01em;}
+.masthead .brand small{display:block;font-family:'Inter',sans-serif;font-weight:500;font-size:10.5px;color:#DFF0E7;text-transform:none;letter-spacing:0.02em;margin-top:1px;}
+.masthead .who{font-size:11px;color:#DFF0E7;text-align:right;cursor:pointer;text-decoration:underline;text-underline-offset:3px;flex-shrink:0;}
+
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:12px;
+  box-shadow:0 1px 3px rgba(20,50,35,0.06);
+  padding:16px;margin-bottom:14px;
+}
+.field{margin-bottom:14px;}
+.field label{display:block;font-size:11.5px;text-transform:uppercase;letter-spacing:0.04em;color:var(--ink-soft);margin-bottom:6px;font-weight:600;}
+input[type=text],textarea{
+  width:100%;
+  background:#fff;
+  border:1.5px solid var(--line);
+  border-radius:8px;
+  padding:10px 11px;
+  font-family:'Inter',sans-serif;
+  font-size:15px;
+  color:var(--ink);
+}
+input[type=text]:focus,textarea:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px var(--green-pale);}
+textarea{resize:vertical;min-height:56px;}
+
+.btn{
+  font-family:'Poppins',sans-serif;font-weight:700;
+  border:none;border-radius:9px;
+  background:var(--green);color:#fff;
+  padding:13px 18px;font-size:14px;
+  cursor:pointer;
+  width:100%;
+  transition:filter .1s ease, transform .08s ease;
+}
+.btn:active{transform:translateY(1px);}
+.btn:disabled{opacity:0.4;cursor:not-allowed;}
+.btn.secondary{background:var(--green-pale);color:var(--green-dark);}
+.btn.orange{background:var(--orange);}
+.btn.orange:hover{filter:brightness(0.96);}
+.btn.ghost{background:transparent;border:1.5px solid var(--line);color:var(--ink-soft);box-shadow:none;font-weight:600;}
+.btn.small{width:auto;padding:8px 14px;font-size:12.5px;}
+
+.intro{font-size:12.5px;color:var(--ink-soft);line-height:1.55;margin-bottom:16px;}
+.howto{font-size:12px;color:var(--green-dark);line-height:1.6;background:var(--green-pale);border-radius:8px;padding:10px 12px;margin-bottom:14px;}
+.howto b{color:var(--green-dark);}
+.deadline-box{font-size:12.5px;color:#8a4a12;line-height:1.5;background:#FDEFDD;border:1.5px solid var(--orange);border-radius:8px;padding:9px 12px;margin-bottom:14px;font-weight:600;}
+.deadline-box b{color:var(--orange-dark);}
+.stepnote{font-size:11px;color:var(--ink-soft);line-height:1.5;margin:4px 0 12px;}
+.name-option{
+  display:flex;align-items:center;gap:10px;
+  padding:12px 12px;margin-bottom:8px;
+  border:1.5px solid var(--line);border-radius:9px;
+  font-size:14.5px;font-weight:600;color:var(--ink);
+  cursor:pointer;background:#fff;
+}
+.name-option .name-dot{width:16px;height:16px;border-radius:50%;border:2px solid var(--line);flex-shrink:0;}
+.name-option.active{border-color:var(--green);background:var(--green-pale);color:var(--green-dark);}
+.name-option.active .name-dot{border-color:var(--green);background:var(--green);box-shadow:inset 0 0 0 3px #fff;}
+.search{margin-bottom:10px;}
+.obj-row{
+  display:flex;align-items:flex-start;gap:10px;
+  padding:11px 4px;border-bottom:1px solid var(--line);
+  cursor:pointer;
+}
+.obj-row:last-child{border-bottom:none;}
+.obj-row input[type=checkbox]{margin-top:3px;width:18px;height:18px;accent-color:var(--green);flex-shrink:0;}
+.obj-row .meta{flex:1;}
+.obj-row .meta .name{font-weight:600;font-size:14px;}
+.obj-row .meta .sub{font-size:11px;color:var(--ink-soft);margin-top:2px;}
+.wie-tag{
+  font-family:'Poppins',sans-serif;font-weight:700;font-size:10px;
+  background:var(--orange);color:#fff;padding:2px 7px;border-radius:20px;
+  display:inline-block;margin-right:6px;
+}
+.count-pill{font-size:10px;color:var(--ink-soft);border:1px solid var(--line);padding:2px 6px;border-radius:10px;}
+
+.progress-bar{height:9px;background:var(--line);border-radius:5px;position:relative;margin:10px 0 4px;overflow:hidden;}
+.progress-bar .fill{height:100%;background:var(--green);transition:width .3s ease;}
+.progress-label{font-size:11.5px;color:var(--ink-soft);display:flex;justify-content:space-between;}
+
+.unit-row{
+  display:flex;align-items:center;gap:10px;
+  padding:12px 4px;border-bottom:1px solid var(--line);cursor:pointer;
+}
+.unit-row:last-child{border-bottom:none;}
+.unit-row:active{background:var(--green-pale);}
+.status-dot{width:11px;height:11px;border-radius:50%;flex-shrink:0;border:1.5px solid var(--line);}
+.status-dot.offen{background:#fff;}
+.status-dot.progress{background:var(--warn);border-color:var(--warn);}
+.status-dot.done{background:var(--ok);border-color:var(--ok);}
+.unit-row .name{flex:1;}
+.unit-row .name .addr{font-size:14px;font-weight:600;}
+.unit-row .name .wieline{font-size:10.5px;color:var(--ink-soft);margin-top:2px;}
+.unit-row .chev{color:var(--ink-soft);font-size:16px;}
+
+.group-title{
+  font-family:'Poppins',sans-serif;font-weight:700;font-size:13px;
+  margin:20px 0 4px;color:var(--green-dark);
+  border-bottom:2px solid var(--green-pale);padding-bottom:5px;
+  display:flex;align-items:center;gap:6px;
+}
+.group-title:first-child{margin-top:0;}
+
+.chip-row{display:flex;flex-wrap:wrap;gap:6px;}
+.chip{
+  border:1.5px solid var(--line);
+  background:#fff;
+  border-radius:8px;
+  font-family:'Inter',sans-serif;
+  font-weight:600;font-size:13px;
+  padding:8px 4px;
+  min-width:40px;text-align:center;
+  cursor:pointer;flex:1;
+  color:var(--ink);
+}
+.chip.small{flex:0 0 auto;min-width:38px;}
+.chip.active{background:var(--ink);color:#fff;border-color:var(--ink);}
+.chip.active.r1{background:var(--ok);border-color:var(--ok);}
+.chip.active.r2{background:#5FA97D;border-color:#5FA97D;}
+.chip.active.r3{background:var(--warn);border-color:var(--warn);}
+.chip.active.r4{background:var(--bad);border-color:var(--bad);}
+.chip.active.rnv{background:var(--ink-soft);border-color:var(--ink-soft);}
+.cat-block{margin-bottom:16px;padding-bottom:14px;border-bottom:1px dashed var(--line);}
+.cat-block:last-of-type{border-bottom:none;}
+.cat-block .cat-name{font-size:13px;font-weight:700;margin-bottom:8px;}
+.cat-block .cat-name .req{color:var(--orange-dark);}
+
+.photo-strip{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}
+.photo-thumb{position:relative;width:56px;height:56px;border-radius:8px;overflow:hidden;border:1.5px solid var(--line);flex-shrink:0;}
+.photo-thumb img{width:100%;height:100%;object-fit:cover;display:block;cursor:pointer;}
+.photo-thumb .rm{
+  position:absolute;top:1px;right:1px;width:17px;height:17px;border-radius:50%;
+  background:rgba(20,20,20,0.65);color:#fff;font-size:11px;line-height:17px;text-align:center;
+  cursor:pointer;font-weight:700;
+}
+.photo-add{
+  width:56px;height:56px;border-radius:8px;border:1.5px dashed var(--line);
+  display:flex;align-items:center;justify-content:center;flex-direction:column;
+  cursor:pointer;color:var(--green);font-size:19px;flex-shrink:0;background:var(--green-pale);
+}
+.photo-add span{font-size:9px;color:var(--ink-soft);font-weight:600;margin-top:1px;}
+.photo-input{display:none;}
+
+.lightbox{
+  position:fixed;inset:0;background:rgba(10,20,15,0.88);z-index:100;
+  display:flex;align-items:center;justify-content:center;padding:20px;
+}
+.lightbox img{max-width:100%;max-height:100%;border-radius:8px;}
+.lightbox .close{position:absolute;top:16px;right:18px;color:#fff;font-size:28px;cursor:pointer;font-family:'Poppins',sans-serif;}
+
+.legend-box{
+  font-size:11px;color:var(--ink-soft);line-height:1.65;
+  background:var(--green-pale);border-radius:10px;
+  padding:10px 12px;margin-bottom:16px;
+}
+.legend-box b{color:var(--green-dark);}
+
+.top-nav{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.top-nav .back{cursor:pointer;font-size:22px;font-family:'Poppins',sans-serif;font-weight:700;line-height:1;color:var(--green-dark);}
+.top-nav .title{flex:1;}
+.top-nav .title .t1{font-family:'Poppins',sans-serif;font-weight:700;font-size:17px;}
+.top-nav .title .t2{font-size:11px;color:var(--ink-soft);}
+
+.stamp-box{
+  display:flex;align-items:center;gap:12px;
+  background:var(--ok-bg);border-radius:10px;color:var(--green-dark);
+  padding:11px 12px;margin-bottom:16px;
+}
+.stamp-box .icon{font-family:'Poppins',sans-serif;font-weight:800;font-size:20px;background:var(--ok);color:#fff;border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.stamp-box .txt{font-size:12px;line-height:1.4;}
+.stamp-box .txt b{font-family:'Poppins',sans-serif;display:block;font-size:13px;}
+
+.tabbar{
+  position:fixed;bottom:0;left:0;right:0;
+  background:#fff;border-top:1px solid var(--line);
+  display:flex;max-width:640px;margin:0 auto;
+  box-shadow:0 -2px 8px rgba(20,50,35,0.05);
+}
+.tabbar .tab{
+  flex:1;text-align:center;padding:11px 4px 9px;cursor:pointer;
+  font-family:'Poppins',sans-serif;font-weight:600;font-size:10.5px;
+  color:var(--ink-soft);
+  border-top:3px solid transparent;
+}
+.tabbar .tab.active{color:var(--green);border-top-color:var(--orange);}
+.tabbar .tab .ico{font-size:17px;display:block;margin-bottom:2px;}
+
+.empty{text-align:center;padding:40px 10px;color:var(--ink-soft);font-size:13px;}
+.toast{
+  position:fixed;bottom:70px;left:50%;transform:translateX(-50%);
+  background:var(--green-dark);color:#fff;
+  padding:9px 16px;font-size:12px;font-family:'Poppins',sans-serif;font-weight:600;
+  border-radius:20px;opacity:0;pointer-events:none;transition:opacity .25s ease;
+  white-space:nowrap;z-index:50;
+}
+.toast.show{opacity:1;}
+
+.confetti-layer{position:fixed;inset:0;pointer-events:none;z-index:200;overflow:hidden;}
+.confetti-piece{
+  position:absolute;top:-20px;width:9px;height:14px;opacity:0.95;
+  animation-name:confetti-fall;
+  animation-timing-function:cubic-bezier(.25,.46,.45,.94);
+  animation-fill-mode:forwards;
+  border-radius:2px;
+}
+@keyframes confetti-fall{
+  0%{ transform: translateY(0) translateX(0) rotate(0deg); opacity:1; }
+  100%{ transform: translateY(105vh) translateX(var(--drift,0px)) rotate(var(--spin,540deg)); opacity:0.9; }
+}
+.success-badge{
+  position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.6);
+  background:var(--ok);color:#fff;width:84px;height:84px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-size:40px;
+  z-index:201;pointer-events:none;opacity:0;
+  animation:success-pop 1.1s cubic-bezier(.34,1.56,.64,1) forwards;
+}
+@keyframes success-pop{
+  0%{ opacity:0; transform:translate(-50%,-50%) scale(0.4); }
+  25%{ opacity:1; transform:translate(-50%,-50%) scale(1.08); }
+  40%{ transform:translate(-50%,-50%) scale(1); }
+  80%{ opacity:1; transform:translate(-50%,-50%) scale(1); }
+  100%{ opacity:0; transform:translate(-50%,-50%) scale(1); }
+}
+
+.gp-row{display:flex;justify-content:space-between;align-items:center;padding:9px 4px;border-bottom:1px solid var(--line);font-size:12.5px;}
+.gp-row:last-child{border-bottom:none;}
+.gp-row .n{font-weight:600;}
+.gp-row .frac{color:var(--ink-soft);font-weight:600;}
+
+.report-unit{border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:10px;}
+.report-unit .ru-head{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:8px;}
+.report-unit .ru-title{font-weight:700;font-size:14px;}
+.report-unit .ru-sub{font-size:10.5px;color:var(--ink-soft);}
+.report-badge{font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px;flex-shrink:0;white-space:nowrap;}
+.report-badge.done{background:var(--ok-bg);color:var(--green-dark);}
+.report-badge.progress{background:var(--warn-bg);color:#8a611c;}
+.report-badge.offen{background:var(--line);color:var(--ink-soft);}
+.rv-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px 12px;font-size:12px;margin-bottom:8px;}
+.rv-grid .k{color:var(--ink-soft);}
+.rv-grid .v{font-weight:600;}
+.rv-grid .v.r1{color:var(--ok);}
+.rv-grid .v.r2{color:#4f9169;}
+.rv-grid .v.r3{color:#a1731f;}
+.rv-grid .v.r4{color:var(--bad);}
+.rv-bem{font-size:12px;background:var(--paper);border-radius:8px;padding:8px 10px;margin-top:4px;line-height:1.5;}
+.rv-photos{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+.rv-photos img{width:48px;height:48px;object-fit:cover;border-radius:6px;border:1px solid var(--line);cursor:pointer;}
+.rv-meta{font-size:10.5px;color:var(--ink-soft);margin-top:8px;border-top:1px dashed var(--line);padding-top:6px;}
+
+/* Statistics */
+.stat-row{margin-bottom:14px;}
+.stat-row .stat-label{display:flex;justify-content:space-between;font-size:12.5px;font-weight:600;margin-bottom:5px;}
+.stat-row .stat-label .n{color:var(--ink-soft);font-weight:500;}
+.stat-bar{display:flex;height:16px;border-radius:5px;overflow:hidden;background:var(--line);}
+.stat-bar .seg{height:100%;}
+.stat-bar .seg.r1{background:var(--ok);}
+.stat-bar .seg.r2{background:#5FA97D;}
+.stat-bar .seg.r3{background:var(--warn);}
+.stat-bar .seg.r4{background:var(--bad);}
+.stat-bar .seg.rnv{background:var(--ink-soft);}
+.stat-legend{display:flex;gap:10px;flex-wrap:wrap;font-size:10px;color:var(--ink-soft);margin-top:10px;}
+.stat-legend .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px;vertical-align:middle;}
+.kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.kpi-card{background:var(--green-pale);border-radius:10px;padding:12px 14px;}
+.kpi-card .kv{font-family:'Poppins',sans-serif;font-weight:800;font-size:22px;color:var(--green-dark);}
+.kpi-card .kl{font-size:11px;color:var(--ink-soft);margin-top:2px;}
+.prio-row{display:flex;align-items:center;gap:10px;padding:10px 4px;border-bottom:1px solid var(--line);}
+.prio-row:last-child{border-bottom:none;}
+.prio-rank{font-family:'Poppins',sans-serif;font-weight:800;font-size:14px;color:var(--bad);width:20px;flex-shrink:0;}
+.prio-row .pn{flex:1;}
+.prio-row .pn .pa{font-weight:600;font-size:13px;}
+.prio-row .pn .pc{font-size:10.5px;color:var(--ink-soft);margin-top:1px;}
+.prio-score{font-family:'Poppins',sans-serif;font-weight:700;font-size:12px;background:var(--bad-bg);color:var(--bad);padding:3px 9px;border-radius:20px;flex-shrink:0;}
+
+@media print{
+  .tabbar, .top-nav .back, #printBtn, .btn{display:none !important;}
+  body{background:#fff;}
+  .card, .report-unit{box-shadow:none;border:1px solid #ccc;break-inside:avoid;}
+  #app{max-width:100%;padding-bottom:0;}
+}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div style="position:fixed;bottom:2px;right:6px;font-size:9px;color:#b9c2bd;z-index:999;pointer-events:none;font-family:sans-serif;">Build 2026-07-02-d</div>
+<div class="toast" id="toast"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script>
+const DATA = {"units":[{"wie":"1","objekt":"Köpenicker Straße 121, 121a","adresse":"Köpenicker 121","jahr":"2012","id":"u001"},{"wie":"1","objekt":"Köpenicker Straße 121, 121a","adresse":"Köpenicker Straße 121a","jahr":"2012","id":"u002"},{"wie":"2","objekt":"H.-Heine Str. 13","adresse":"H.-Heine Str. 13","jahr":"2012","id":"u003"},{"wie":"3","objekt":"Michaelkirchstr. 24-30","adresse":"Michaelkirchstr. 24.01","jahr":"2009","id":"u004"},{"wie":"3","objekt":"Michaelkirchstr. 24-30","adresse":"Michaelkirchstr. 24.02","jahr":"2009","id":"u005"},{"wie":"3","objekt":"Michaelkirchstr. 24-30","adresse":"Michaelkirchstr. 26.01","jahr":"2009","id":"u006"},{"wie":"3","objekt":"Michaelkirchstr. 24-30","adresse":"Michaelkirchstr. 26.02","jahr":"2009","id":"u007"},{"wie":"3","objekt":"Michaelkirchstr. 24-30","adresse":"Michaelkirchstr. 28.01","jahr":"2009","id":"u008"},{"wie":"3","objekt":"Michaelkirchstr. 24-30","adresse":"Michaelkirchstr. 28.02","jahr":"2009","id":"u009"},{"wie":"3","objekt":"Michaelkirchstr. 24-30","adresse":"Michaelkirchstr. 30.01","jahr":"2009","id":"u010"},{"wie":"3","objekt":"Michaelkirchstr. 24-30","adresse":"Michaelkirchstr. 30.02","jahr":"2009","id":"u011"},{"wie":"4","objekt":"H-Heine-Str. 2-16","adresse":"H-Heine-Str. 2.21","jahr":"2011","id":"u012"},{"wie":"4","objekt":"H-Heine-Str. 2-16","adresse":"H-Heine-Str. 2-22","jahr":"2011","id":"u013"},{"wie":"4","objekt":"H-Heine-Str. 2-16","adresse":"H-Heine-Str. 2-23","jahr":"2011","id":"u014"},{"wie":"4","objekt":"H-Heine-Str. 2-16","adresse":"H-Heine-Str. 4-41","jahr":"2011","id":"u015"},{"wie":"4","objekt":"H-Heine-Str. 2-16","adresse":"H-Heine-Str. 4-42","jahr":"2011","id":"u016"},{"wie":"4","objekt":"H-Heine-Str. 2-16","adresse":"H-Heine-Str. 4-43","jahr":"2011","id":"u017"},{"wie":"4","objekt":"H-Heine-Str. 2-16","adresse":"H-Heine-Str. 6-61","jahr":"2011","id":"u018"},{"wie":"4","objekt":"H-Heine-Str. 2-16","adresse":"H-Heine-Str. 6-62","jahr":"2011","id":"u019"},{"wie":"4","objekt":"H-Heine-Str. 2-16","adresse":"H-Heine-Str. 8-81","jahr":"2011","id":"u020"},{"wie":"4","objekt":"H-Heine-Str. 2-16","adresse":"H-Heine-Str. 8-82","jahr":"2011","id":"u021"},{"wie":"4","objekt":"H-Heine-Str. 2-16","adresse":"H-Heine-Str. 10-101","jahr":"2011","id":"u022"},{"wie":"4","objekt":"H-Heine-Str. 2-16","adresse":"H-Heine-Str. 10-102","jahr":"2011","id":"u023"},{"wie":"4","objekt":"H-Heine-Str. 2-16","adresse":"H-Heine-Str. 12-121","jahr":"2011","id":"u024"},{"wie":"4","objekt":"H-Heine-Str. 2-16","adresse":"H-Heine-Str. 12-122","jahr":"2011","id":"u025"},{"wie":"4","objekt":"H-Heine-Str. 2-16","adresse":"H-Heine-Str. 14-141","jahr":"2011","id":"u026"},{"wie":"4","objekt":"H-Heine-Str. 2-16","adresse":"H-Heine-Str. 14-142","jahr":"2011","id":"u027"},{"wie":"4","objekt":"H-Heine-Str. 2-16","adresse":"H-Heine-Str. 14-143","jahr":"2011","id":"u028"},{"wie":"4","objekt":"H-Heine-Str. 2-16","adresse":"H-Heine-Str. 16-161","jahr":"2011","id":"u029"},{"wie":"4","objekt":"H-Heine-Str. 2-16","adresse":"H-Heine-Str. 16-162","jahr":"2011","id":"u030"},{"wie":"4","objekt":"H-Heine-Str. 2-16","adresse":"H-Heine-Str. 16-163","jahr":"2011","id":"u031"},{"wie":"5","objekt":"Michaelkirchplatz 11","adresse":"Michaelkirchplatz 11","jahr":"2009","id":"u032"},{"wie":"5","objekt":"Michaelkirchstr. 2-7","adresse":"Michaelkirchstr. 2","jahr":"2013","id":"u033"},{"wie":"5","objekt":"Michaelkirchstr. 2-7","adresse":"Michaelkirchstr. 3","jahr":"2013","id":"u034"},{"wie":"5","objekt":"Michaelkirchstr. 2-7","adresse":"Michaelkirchstr. 4","jahr":"2013","id":"u035"},{"wie":"5","objekt":"Michaelkirchstr. 2-7","adresse":"Michaelkirchstr. 5","jahr":"2013","id":"u036"},{"wie":"5","objekt":"Michaelkirchstr. 2-7","adresse":"Michaelkirchstr. 6","jahr":"2013","id":"u037"},{"wie":"5","objekt":"Michaelkirchstr. 2-7","adresse":"Michaelkirchstr. 7","jahr":"2013","id":"u038"},{"wie":"6","objekt":"Annenstr. 1-2","adresse":"Annenstr. 1","jahr":"2014","id":"u039"},{"wie":"6","objekt":"Annenstr. 1-2","adresse":"Annenstr. 2","jahr":"2014","id":"u040"},{"wie":"7","objekt":"Annenstr. 3-4","adresse":"Annenstr. 3-31","jahr":"2006","id":"u041"},{"wie":"7","objekt":"Annenstr. 3-4","adresse":"Annenstr. 3-32","jahr":"2006","id":"u042"},{"wie":"7","objekt":"Annenstr. 3-4","adresse":"Annenstr. 3-33","jahr":"2006","id":"u043"},{"wie":"7","objekt":"Annenstr. 3-4","adresse":"Annenstr. 4-41","jahr":"2006","id":"u044"},{"wie":"7","objekt":"Annenstr. 3-4","adresse":"Annenstr. 4-42","jahr":"2006","id":"u045"},{"wie":"7","objekt":"Annenstr. 3-4","adresse":"Annenstr. 4-43","jahr":"2006","id":"u046"},{"wie":"7","objekt":"H.Heine-Str. 9-11","adresse":"H.Heine-Str. 9-91","jahr":"2007","id":"u047"},{"wie":"7","objekt":"H.Heine-Str. 9-11","adresse":"H.Heine Str. 9-92","jahr":"2007","id":"u048"},{"wie":"7","objekt":"H.Heine-Str. 9-11","adresse":"H.Heine Str. 9-93","jahr":"2007","id":"u049"},{"wie":"7","objekt":"H.Heine-Str. 9-11","adresse":"H.Heine Str. 11-111","jahr":"2007","id":"u050"},{"wie":"7","objekt":"H.Heine-Str. 9-11","adresse":"H.Heine Str. 11-112","jahr":"2007","id":"u051"},{"wie":"7","objekt":"H.Heine-Str. 9-11","adresse":"H.Heine Str. 11-113","jahr":"2007","id":"u052"},{"wie":"8","objekt":"Schmidstr. 1-3","adresse":"Schmidstr. 1-11","jahr":"2008","id":"u053"},{"wie":"8","objekt":"Schmidstr. 1-3","adresse":"Schmidstr. 1-12","jahr":"2008","id":"u054"},{"wie":"8","objekt":"Schmidstr. 1-3","adresse":"Schmidstr. 3-31","jahr":"2008","id":"u055"},{"wie":"8","objekt":"Schmidstr. 1-3","adresse":"Schmidstr. 3-32","jahr":"2008","id":"u056"},{"wie":"8","objekt":"Schmidstr. 5-7","adresse":"Schmidstr. 5-51","jahr":"2007","id":"u057"},{"wie":"8","objekt":"Schmidstr. 5-7","adresse":"Schmidstr. 5-52","jahr":"2007","id":"u058"},{"wie":"8","objekt":"Schmidstr. 5-7","adresse":"Schmidstr. 5-53","jahr":"2007","id":"u059"},{"wie":"8","objekt":"Schmidstr. 5-7","adresse":"Schmidstr. 7-71","jahr":"2007","id":"u060"},{"wie":"8","objekt":"Schmidstr. 5-7","adresse":"Schmidstr. 7-72","jahr":"2007","id":"u061"},{"wie":"8","objekt":"Schmidstr. 5-7","adresse":"Schmidstr. 7-73","jahr":"2007","id":"u062"},{"wie":"8","objekt":"Schmidstr. 9-11","adresse":"Schmidstr. 9-91","jahr":"2009","id":"u063"},{"wie":"8","objekt":"Schmidstr. 9-11","adresse":"Schmidstr. 9-92","jahr":"2009","id":"u064"},{"wie":"8","objekt":"Schmidstr. 9-11","adresse":"Schmidstr. 11-111","jahr":"2009","id":"u065"},{"wie":"8","objekt":"Schmidstr. 9-11","adresse":"Schmidstr. 11-112","jahr":"2009","id":"u066"},{"wie":"9","objekt":"Annenstr. 5-8","adresse":"Annenstr. 5","jahr":"2005","id":"u067"},{"wie":"9","objekt":"Annenstr. 5-8","adresse":"Annenstr. 6","jahr":"2005","id":"u068"},{"wie":"9","objekt":"Annenstr. 5-8","adresse":"Annenstr. 7","jahr":"2005","id":"u069"},{"wie":"9","objekt":"Annenstr. 5-8","adresse":"Annenstr. 8","jahr":"2005","id":"u070"},{"wie":"9","objekt":"Annenstr. 9-12","adresse":"Annenstr. 9","jahr":"2008","id":"u071"},{"wie":"9","objekt":"Annenstr. 9-12","adresse":"Annenstr. 10","jahr":"2008","id":"u072"},{"wie":"9","objekt":"Annenstr. 9-12","adresse":"Annenstr. 11","jahr":"2008","id":"u073"},{"wie":"9","objekt":"Annenstr. 9-12","adresse":"Annenstr. 12","jahr":"2008","id":"u074"},{"wie":"10","objekt":"Annenstr. 14-18","adresse":"Annenstr. 14","jahr":"2008","id":"u075"},{"wie":"10","objekt":"Annenstr. 14-18","adresse":"Annenstr. 15","jahr":"2008","id":"u076"},{"wie":"10","objekt":"Annenstr. 14-18","adresse":"Annenstr. 16","jahr":"2008","id":"u077"},{"wie":"10","objekt":"Annenstr. 14-18","adresse":"Annenstr. 17","jahr":"2008","id":"u078"},{"wie":"10","objekt":"Annenstr. 14-18","adresse":"Annenstr. 18","jahr":"2008","id":"u079"},{"wie":"10","objekt":"Neue Jakobstr. 16-20","adresse":"Neue Jakobstr. 16","jahr":"2008","id":"u080"},{"wie":"10","objekt":"Neue Jakobstr. 16-20","adresse":"Neue Jakobstr. 17","jahr":"2008","id":"u081"},{"wie":"10","objekt":"Neue Jakobstr. 16-20","adresse":"Neue Jakobstr. 18","jahr":"2008","id":"u082"},{"wie":"10","objekt":"Neue Jakobstr. 16-20","adresse":"Neue Jakobstr. 19","jahr":"2008","id":"u083"},{"wie":"10","objekt":"Neue Jakobstr. 16-20","adresse":"Neue Jakobstr. 20","jahr":"2008","id":"u084"},{"wie":"10","objekt":"Neue Jakobstr. 26-29","adresse":"Neue Jakobstr. 26","jahr":"2003","id":"u085"},{"wie":"10","objekt":"Neue Jakobstr. 26-29","adresse":"Neue Jakobstr. 27","jahr":"2003","id":"u086"},{"wie":"10","objekt":"Neue Jakobstr. 26-29","adresse":"Neue Jakobstr. 28","jahr":"2003","id":"u087"},{"wie":"10","objekt":"Neue Jakobstr. 26-29","adresse":"Neue Jakobstr. 29","jahr":"2003","id":"u088"},{"wie":"11","objekt":"Annenstr. 24-26","adresse":"Annenstr. 24","jahr":"2009","id":"u089"},{"wie":"11","objekt":"Annenstr. 24-26","adresse":"Annenstr. 25","jahr":"2009","id":"u090"},{"wie":"11","objekt":"Annenstr. 24-26","adresse":"Annenstr. 26","jahr":"2009","id":"u091"},{"wie":"11","objekt":"Annenstr. 27-30","adresse":"Annenstr. 27","jahr":"2003","id":"u092"},{"wie":"11","objekt":"Annenstr. 27-30","adresse":"Annenstr. 28","jahr":"2003","id":"u093"},{"wie":"11","objekt":"Annenstr. 27-30","adresse":"Annenstr. 29","jahr":"2003","id":"u094"},{"wie":"11","objekt":"Annenstr. 27-30","adresse":"Annenstr. 30","jahr":"2003","id":"u095"},{"wie":"11","objekt":"Annenstr. 31-34","adresse":"Annenstr. 31","jahr":"2009","id":"u096"},{"wie":"11","objekt":"Annenstr. 31-34","adresse":"Annenstr. 32","jahr":"2009","id":"u097"},{"wie":"11","objekt":"Annenstr. 31-34","adresse":"Annenstr. 33","jahr":"2009","id":"u098"},{"wie":"11","objekt":"Annenstr. 31-34","adresse":"Annenstr. 34","jahr":"2009","id":"u099"},{"wie":"12","objekt":"Annenstr. 20-23","adresse":"Annenstr. 20","jahr":"2009","id":"u100"},{"wie":"12","objekt":"Annenstr. 20-23","adresse":"Annenstr. 21","jahr":"2009","id":"u101"},{"wie":"12","objekt":"Annenstr. 20-23","adresse":"Annenstr. 22","jahr":"2009","id":"u102"},{"wie":"12","objekt":"Annenstr. 20-23","adresse":"Annenstr. 23","jahr":"2009","id":"u103"},{"wie":"12","objekt":"Sebastianstr. 40-44","adresse":"Sebastianstr. 40","jahr":"2009","id":"u104"},{"wie":"12","objekt":"Sebastianstr. 40-44","adresse":"Sebastianstr. 41","jahr":"2009","id":"u105"},{"wie":"12","objekt":"Sebastianstr. 40-44","adresse":"Sebastianstr. 42","jahr":"2009","id":"u106"},{"wie":"12","objekt":"Sebastianstr. 40-44","adresse":"Sebastianstr. 43","jahr":"2009","id":"u107"},{"wie":"12","objekt":"Sebastianstr. 40-44","adresse":"Sebastianstr. 44","jahr":"2009","id":"u108"},{"wie":"13","objekt":"Dresdener Str. 87-90","adresse":"Dresdener Str. 87","jahr":"2003","id":"u109"},{"wie":"13","objekt":"Dresdener Str. 87-90","adresse":"Dresdener Str. 88","jahr":"2003","id":"u110"},{"wie":"13","objekt":"Dresdener Str. 87-90","adresse":"Dresdener Str. 89","jahr":"2003","id":"u111"},{"wie":"13","objekt":"Dresdener Str. 87-90","adresse":"Dresdener Str. 90","jahr":"2003","id":"u112"},{"wie":"13","objekt":"Dresdener Str. 91-94","adresse":"Dresdener Str. 91","jahr":"2003","id":"u113"},{"wie":"13","objekt":"Dresdener Str. 91-94","adresse":"Dresdener Str. 92","jahr":"2003","id":"u114"},{"wie":"13","objekt":"Dresdener Str. 91-94","adresse":"Dresdener Str. 93","jahr":"2003","id":"u115"},{"wie":"13","objekt":"Dresdener Str. 91-94","adresse":"Dresdener Str. 94","jahr":"2003","id":"u116"},{"wie":"14","objekt":"Sebastianstr. 25-29","adresse":"Sebastianstr. 25","jahr":"2010","id":"u117"},{"wie":"14","objekt":"Sebastianstr. 25-29","adresse":"Sebastianstr. 26","jahr":"2010","id":"u118"},{"wie":"14","objekt":"Sebastianstr. 25-29","adresse":"Sebastianstr. 27","jahr":"2010","id":"u119"},{"wie":"14","objekt":"Sebastianstr. 25-29","adresse":"Sebastianstr. 28","jahr":"2010","id":"u120"},{"wie":"14","objekt":"Sebastianstr. 25-29","adresse":"Sebastianstr. 29","jahr":"2010","id":"u121"},{"wie":"14","objekt":"Sebastianstr. 30-34","adresse":"Sebastianstr. 30","jahr":"2010","id":"u122"},{"wie":"14","objekt":"Sebastianstr. 30-34","adresse":"Sebastianstr. 31","jahr":"2010","id":"u123"},{"wie":"14","objekt":"Sebastianstr. 30-34","adresse":"Sebastianstr. 32","jahr":"2010","id":"u124"},{"wie":"14","objekt":"Sebastianstr. 30-34","adresse":"Sebastianstr. 33","jahr":"2010","id":"u125"},{"wie":"14","objekt":"Sebastianstr. 30-34","adresse":"Sebastianstr. 34","jahr":"2010","id":"u126"},{"wie":"14","objekt":"Sebastianstr. 35-39","adresse":"Sebastianstr. 35","jahr":"2009","id":"u127"},{"wie":"14","objekt":"Sebastianstr. 35-39","adresse":"Sebastianstr. 36","jahr":"2009","id":"u128"},{"wie":"14","objekt":"Sebastianstr. 35-39","adresse":"Sebastianstr. 37","jahr":"2009","id":"u129"},{"wie":"14","objekt":"Sebastianstr. 35-39","adresse":"Sebastianstr. 38","jahr":"2009","id":"u130"},{"wie":"14","objekt":"Sebastianstr. 35-39","adresse":"Sebastianstr. 39","jahr":"2009","id":"u131"},{"wie":"15","objekt":"H.-Heine-Str. 45-49","adresse":"H.-Heine-Str. 45","jahr":"2012","id":"u132"},{"wie":"15","objekt":"H.-Heine-Str. 45-49","adresse":"H.-Heine-Str. 46","jahr":"2012","id":"u133"},{"wie":"15","objekt":"H.-Heine-Str. 45-49","adresse":"H.-Heine-Str. 47","jahr":"2012","id":"u134"},{"wie":"15","objekt":"H.-Heine-Str. 45-49","adresse":"H.-Heine-Str. 48","jahr":"2012","id":"u135"},{"wie":"15","objekt":"H.-Heine-Str. 45-49","adresse":"H.-Heine-Str. 49","jahr":"2012","id":"u136"},{"wie":"15","objekt":"H.-Heine-Str. 50-53","adresse":"H.-Heine-Str. 50","jahr":"2012","id":"u137"},{"wie":"15","objekt":"H.-Heine-Str. 50-53","adresse":"H.-Heine-Str. 51","jahr":"2012","id":"u138"},{"wie":"15","objekt":"H.-Heine-Str. 50-53","adresse":"H.-Heine-Str. 52","jahr":"2012","id":"u139"},{"wie":"15","objekt":"H.-Heine-Str. 50-53","adresse":"H.-Heine-Str. 53","jahr":"2012","id":"u140"},{"wie":"15","objekt":"H.-Heine-Str. 54-57","adresse":"H.-Heine-Str. 54","jahr":"2012","id":"u141"},{"wie":"15","objekt":"H.-Heine-Str. 54-57","adresse":"H.-Heine-Str. 55","jahr":"2012","id":"u142"},{"wie":"15","objekt":"H.-Heine-Str. 54-57","adresse":"H.-Heine-Str. 56","jahr":"2012","id":"u143"},{"wie":"15","objekt":"H.-Heine-Str. 54-57","adresse":"H.-Heine-Str. 57","jahr":"2012","id":"u144"},{"wie":"15","objekt":"H.-Heine-Str. 58-62","adresse":"H.-Heine-Str. 58","jahr":"2011","id":"u145"},{"wie":"15","objekt":"H.-Heine-Str. 58-62","adresse":"H.-Heine-Str. 59","jahr":"2011","id":"u146"},{"wie":"15","objekt":"H.-Heine-Str. 58-62","adresse":"H.-Heine-Str. 60","jahr":"2011","id":"u147"},{"wie":"15","objekt":"H.-Heine-Str. 58-62","adresse":"H.-Heine-Str. 61","jahr":"2011","id":"u148"},{"wie":"15","objekt":"H.-Heine-Str. 58-62","adresse":"H.-Heine-Str. 62","jahr":"2011","id":"u149"},{"wie":"16","objekt":"Annenstr. 35-41","adresse":"Annenstr. 35","jahr":"2007","id":"u150"},{"wie":"16","objekt":"Annenstr. 35-41","adresse":"Annenstr. 36","jahr":"2007","id":"u151"},{"wie":"16","objekt":"Annenstr. 35-41","adresse":"Annenstr. 37","jahr":"2007","id":"u152"},{"wie":"16","objekt":"Annenstr. 35-41","adresse":"Annenstr. 38","jahr":"2007","id":"u153"},{"wie":"16","objekt":"Annenstr. 35-41","adresse":"Annenstr. 39","jahr":"2007","id":"u154"},{"wie":"16","objekt":"Annenstr. 35-41","adresse":"Annenstr. 40","jahr":"2007","id":"u155"},{"wie":"16","objekt":"Annenstr. 35-41","adresse":"Annenstr. 41","jahr":"2007","id":"u156"},{"wie":"17","objekt":"Neue Jakobstr. 31-34","adresse":"Neue Jakobstr. 31","jahr":"2003","id":"u157"},{"wie":"17","objekt":"Neue Jakobstr. 31-34","adresse":"Neue Jakobstr. 32","jahr":"2003","id":"u158"},{"wie":"17","objekt":"Neue Jakobstr. 31-34","adresse":"Neue Jakobstr. 33","jahr":"2003","id":"u159"},{"wie":"17","objekt":"Neue Jakobstr. 31-34","adresse":"Neue Jakobstr. 34","jahr":"2003","id":"u160"},{"wie":"18","objekt":"Neue Jakobstr. 35-38","adresse":"Neue Jakobstr. 35","jahr":"2010","id":"u161"},{"wie":"18","objekt":"Neue Jakobstr. 35-38","adresse":"Neue Jakobstr. 36","jahr":"2010","id":"u162"},{"wie":"18","objekt":"Neue Jakobstr. 35-38","adresse":"Neue Jakobstr. 37","jahr":"2010","id":"u163"},{"wie":"18","objekt":"Neue Jakobstr. 35-38","adresse":"Neue Jakobstr. 38","jahr":"2010","id":"u164"},{"wie":"19","objekt":"Dresdener Str. 80-86","adresse":"Dresdener Str. 80","jahr":"2006","id":"u165"},{"wie":"19","objekt":"Dresdener Str. 80-86","adresse":"Dresdener Str. 81","jahr":"2006","id":"u166"},{"wie":"19","objekt":"Dresdener Str. 80-86","adresse":"Dresdener Str. 82","jahr":"2006","id":"u167"},{"wie":"19","objekt":"Dresdener Str. 80-86","adresse":"Dresdener Str. 83","jahr":"2006","id":"u168"},{"wie":"19","objekt":"Dresdener Str. 80-86","adresse":"Dresdener Str. 84","jahr":"2006","id":"u169"},{"wie":"19","objekt":"Dresdener Str. 80-86","adresse":"Dresdener Str. 85","jahr":"2006","id":"u170"},{"wie":"19","objekt":"Dresdener Str. 80-86","adresse":"Dresdener Str. 86","jahr":"2006","id":"u171"},{"wie":"20","objekt":"Berolinastr. 25-28","adresse":"Berolinastr. 25","jahr":"2017","id":"u172"},{"wie":"20","objekt":"Berolinastr. 25-28","adresse":"Berolinastr. 26","jahr":"2017","id":"u173"},{"wie":"20","objekt":"Berolinastr. 25-28","adresse":"Berolinastr. 27","jahr":"2017","id":"u174"},{"wie":"20","objekt":"Berolinastr. 25-28","adresse":"Berolinastr. 28","jahr":"2017","id":"u175"},{"wie":"21","objekt":"Torstr. 187 - 191 C","adresse":"Torstr. 187","jahr":"2014","id":"u176"},{"wie":"21","objekt":"Torstr. 187 - 191 C","adresse":"Torstr. 188","jahr":"2014","id":"u177"},{"wie":"21","objekt":"Torstr. 187 - 191 C","adresse":"Torstr. 189","jahr":"2014","id":"u178"},{"wie":"21","objekt":"Torstr. 187 - 191 C","adresse":"Torstr. 190","jahr":"2014","id":"u179"},{"wie":"21","objekt":"Torstr. 187 - 191 C","adresse":"Torstr. 191","jahr":"2014","id":"u180"},{"wie":"23","objekt":"Chausseestr.  44-47","adresse":"Chausseestr. 44","jahr":"2020","id":"u181"},{"wie":"23","objekt":"Chausseestr.  44-47","adresse":"Chausseestr. 45","jahr":"2020","id":"u182"},{"wie":"23","objekt":"Chausseestr.  44-47","adresse":"Chausseestr. 46","jahr":"2020","id":"u183"},{"wie":"23","objekt":"Chausseestr.  44-47","adresse":"Chausseestr. 47","jahr":"2020","id":"u184"},{"wie":"23","objekt":"Schwarzkopffstr. 12-14","adresse":"Schwarzkopffstr. 12","jahr":"2020","id":"u185"},{"wie":"23","objekt":"Schwarzkopffstr. 12-14","adresse":"Schwarzkopffstr. 13","jahr":"2020","id":"u186"},{"wie":"23","objekt":"Schwarzkopffstr. 12-14","adresse":"Schwarzkopffstr. 14","jahr":"2020","id":"u187"},{"wie":"23","objekt":"Schwarzkopffstr. 17","adresse":"Schwarzkopffstr. 17","jahr":"2020","id":"u188"},{"wie":"23","objekt":"Schwarzkopffstr. 20","adresse":"Schwarzkopffstr. 20","jahr":"2020","id":"u189"},{"wie":"24","objekt":"Charlottenburger Str. 113-114","adresse":"Charlottenburger Str. 113-114 – Treppenhaus 1","jahr":"2013","id":"u190"},{"wie":"24","objekt":"Charlottenburger Str. 113-114","adresse":"Charlottenburger Str. 113-114 – Treppenhaus 2","jahr":"2013","id":"u191"},{"wie":"24","objekt":"Charlottenburger Str. 113-114","adresse":"Charlottenburger Str. 113-114 – Treppenhaus 3","jahr":"2013","id":"u192"},{"wie":"25","objekt":"Pistoriusstr. 106b+c","adresse":"Pistoriusstr. 106b","jahr":"2016","id":"u193"},{"wie":"25","objekt":"Pistoriusstr. 106b+c","adresse":"Pistoriusstr. 106c","jahr":"2016","id":"u194"},{"wie":"27","objekt":"E.-Kuttner Str. 26-32","adresse":"E.-Kuttner Str. 26","jahr":"2016","id":"u195"},{"wie":"27","objekt":"E.-Kuttner Str. 26-32","adresse":"E.-Kuttner Str. 28","jahr":"2016","id":"u196"},{"wie":"27","objekt":"E.-Kuttner Str. 26-32","adresse":"E.-Kuttner Str. 30","jahr":"2016","id":"u197"},{"wie":"27","objekt":"E.-Kuttner Str. 26-32","adresse":"E.-Kuttner Str. 32","jahr":"2016","id":"u198"},{"wie":"27","objekt":"G.-Lehnig-Str. 11-19","adresse":"G.-Lehnig-Str. 11","jahr":"2016","id":"u199"},{"wie":"27","objekt":"G.-Lehnig-Str. 11-19","adresse":"G.-Lehnig-Str. 13","jahr":"2016","id":"u200"},{"wie":"27","objekt":"G.-Lehnig-Str. 11-19","adresse":"G.-Lehnig-Str. 15","jahr":"2016","id":"u201"},{"wie":"27","objekt":"G.-Lehnig-Str. 11-19","adresse":"G.-Lehnig-Str. 17","jahr":"2016","id":"u202"},{"wie":"27","objekt":"G.-Lehnig-Str. 11-19","adresse":"G.-Lehnig-Str. 19","jahr":"2016","id":"u203"},{"wie":"27","objekt":"G.-Lehnig-Str. 1-9","adresse":"G.-Lehnig-Str. 1","jahr":"2016","id":"u204"},{"wie":"27","objekt":"G.-Lehnig-Str. 1-9","adresse":"G.-Lehnig-Str. 3","jahr":"2016","id":"u205"},{"wie":"27","objekt":"G.-Lehnig-Str. 1-9","adresse":"G.-Lehnig-Str. 5","jahr":"2016","id":"u206"},{"wie":"27","objekt":"G.-Lehnig-Str. 1-9","adresse":"G.-Lehnig-Str. 7","jahr":"2016","id":"u207"},{"wie":"27","objekt":"G.-Lehnig-Str. 1-9","adresse":"G.-Lehnig-Str. 9","jahr":"2016","id":"u208"},{"wie":"28","objekt":"Goethestr./Paul-Grasse-Str.","adresse":"Goethestr./Paul-Grasse-Str. – Treppenhaus 1","jahr":"2021","id":"u209"},{"wie":"28","objekt":"Goethestr./Paul-Grasse-Str.","adresse":"Goethestr./Paul-Grasse-Str. – Treppenhaus 2","jahr":"2021","id":"u210"},{"wie":"28","objekt":"Goethestr./Paul-Grasse-Str.","adresse":"Goethestr./Paul-Grasse-Str. – Treppenhaus 3","jahr":"2021","id":"u211"},{"wie":"28","objekt":"Goethestr./Paul-Grasse-Str.","adresse":"Goethestr./Paul-Grasse-Str. – Treppenhaus 4","jahr":"2021","id":"u212"},{"wie":"28","objekt":"Goethestr./Paul-Grasse-Str.","adresse":"Goethestr./Paul-Grasse-Str. – Treppenhaus 5","jahr":"2021","id":"u213"},{"wie":"28","objekt":"Goethestr./Paul-Grasse-Str.","adresse":"Goethestr./Paul-Grasse-Str. – Treppenhaus 6","jahr":"2021","id":"u214"},{"wie":"28","objekt":"Goethestr./Paul-Grasse-Str.","adresse":"Goethestr./Paul-Grasse-Str. – Treppenhaus 7","jahr":"2021","id":"u215"},{"wie":"28","objekt":"Goethestr./Paul-Grasse-Str.","adresse":"Goethestr./Paul-Grasse-Str. – Treppenhaus 8","jahr":"2021","id":"u216"},{"wie":"28","objekt":"Goethestr./Paul-Grasse-Str.","adresse":"Goethestr./Paul-Grasse-Str. – Treppenhaus 9","jahr":"2021","id":"u217"},{"wie":"28","objekt":"Goethestr./Paul-Grasse-Str.","adresse":"Goethestr./Paul-Grasse-Str. – Treppenhaus 10","jahr":"2021","id":"u218"},{"wie":"39","objekt":"Friedlander Str. 132-138","adresse":"Friedlander Str. 132","jahr":"2013","id":"u219"},{"wie":"39","objekt":"Friedlander Str. 132-138","adresse":"Friedlander Str. 134","jahr":"2013","id":"u220"},{"wie":"39","objekt":"Friedlander Str. 132-138","adresse":"Friedlander Str. 136","jahr":"2013","id":"u221"},{"wie":"39","objekt":"Friedlander Str. 132-138","adresse":"Friedlander Str. 138","jahr":"2013","id":"u222"},{"wie":"30","objekt":"Friedlander Str. 140-146","adresse":"Friedlander Str. 140","jahr":"2013","id":"u223"},{"wie":"30","objekt":"Friedlander Str. 140-146","adresse":"Friedlander Str. 142","jahr":"2013","id":"u224"},{"wie":"30","objekt":"Friedlander Str. 140-146","adresse":"Friedlander Str. 144","jahr":"2013","id":"u225"},{"wie":"30","objekt":"Friedlander Str. 140-146","adresse":"Friedlander Str. 146","jahr":"2013","id":"u226"},{"wie":"31","objekt":"Friedlander Str. 145A, 147, 149","adresse":"Friedlander Str. 145A","jahr":"2015","id":"u227"},{"wie":"31","objekt":"Friedlander Str. 145A, 147, 149","adresse":"Friedlander Str. 147","jahr":"2015","id":"u228"},{"wie":"31","objekt":"Friedlander Str. 145A, 147, 149","adresse":"Friedlander Str. 149","jahr":"2015","id":"u229"},{"wie":"32","objekt":"Stienitzseestr. 8-12","adresse":"Stienitzseestr. 8","jahr":"2015","id":"u230"},{"wie":"32","objekt":"Stienitzseestr. 8-12","adresse":"Stienitzseestr. 10","jahr":"2015","id":"u231"},{"wie":"32","objekt":"Stienitzseestr. 8-12","adresse":"Stienitzseestr. 12","jahr":"2015","id":"u232"},{"wie":"33","objekt":"Stienitzseestr. 16+18","adresse":"Stienitzseestr. 16+18 – Treppenhaus 1","jahr":"2016","id":"u233"},{"wie":"33","objekt":"Stienitzseestr. 16+18","adresse":"Stienitzseestr. 16+18 – Treppenhaus 2","jahr":"2016","id":"u234"},{"wie":"33","objekt":"Stienitzseestr. 16+18","adresse":"Stienitzseestr. 16+18 – Treppenhaus 3","jahr":"2016","id":"u235"},{"wie":"33","objekt":"Wassermannstr. 61","adresse":"Wassermannstr. 61","jahr":"2016","id":"u236"},{"wie":"34","objekt":"Hoffmannstr. 5+6","adresse":"Hoffmannstr. 5","jahr":"2016","id":"u237"},{"wie":"34","objekt":"Hoffmannstr. 5+6","adresse":"Hoffmannstr. 6","jahr":"2016","id":"u238"},{"wie":"34","objekt":"Wassermannstr. 56","adresse":"Wassermannstr. 56","jahr":"2016","id":"u239"},{"wie":"35","objekt":"Altheiderstr. 16-22","adresse":"Altheiderstr. 16","jahr":"2016","id":"u240"},{"wie":"35","objekt":"Altheiderstr. 16-22","adresse":"Altheiderstr. 18","jahr":"2016","id":"u241"},{"wie":"35","objekt":"Altheiderstr. 16-22","adresse":"Altheiderstr. 20","jahr":"2016","id":"u242"},{"wie":"35","objekt":"Altheiderstr. 16-22","adresse":"Altheiderstr. 22","jahr":"2016","id":"u243"},{"wie":"35","objekt":"Altheiderstr. 24-26","adresse":"Altheiderstr. 24","jahr":"2016","id":"u244"},{"wie":"35","objekt":"Altheiderstr. 24-26","adresse":"Altheiderstr. 26","jahr":"2016","id":"u245"},{"wie":"36","objekt":"Grimaustr. 42-48","adresse":"Grimaustr. 42","jahr":"2004","id":"u246"},{"wie":"36","objekt":"Grimaustr. 42-48","adresse":"Grimaustr. 44","jahr":"2004","id":"u247"},{"wie":"36","objekt":"Grimaustr. 42-48","adresse":"Grimaustr. 46","jahr":"2004","id":"u248"},{"wie":"36","objekt":"Grimaustr. 42-48","adresse":"Grimaustr. 48","jahr":"2004","id":"u249"},{"wie":"37","objekt":"Grimaustr. 50-56","adresse":"Grimaustr. 50","jahr":"2004","id":"u250"},{"wie":"37","objekt":"Grimaustr. 50-56","adresse":"Grimaustr. 52","jahr":"2004","id":"u251"},{"wie":"37","objekt":"Grimaustr. 50-56","adresse":"Grimaustr. 54","jahr":"2004","id":"u252"},{"wie":"37","objekt":"Grimaustr. 50-56","adresse":"Grimaustr. 56","jahr":"2004","id":"u253"},{"wie":"38","objekt":"Grimaustr. 58-64","adresse":"Grimaustr. 58","jahr":"2004","id":"u254"},{"wie":"38","objekt":"Grimaustr. 58-64","adresse":"Grimaustr. 60","jahr":"2004","id":"u255"},{"wie":"38","objekt":"Grimaustr. 58-64","adresse":"Grimaustr. 62","jahr":"2004","id":"u256"},{"wie":"38","objekt":"Grimaustr. 58-64","adresse":"Grimaustr. 64","jahr":"2004","id":"u257"},{"wie":"39","objekt":"Hasselwerder Str. 6-8","adresse":"Hasselwerder Str. 6","jahr":"2015","id":"u258"},{"wie":"39","objekt":"Hasselwerder Str. 6-8","adresse":"Hasselwerder Str. 7","jahr":"2015","id":"u259"},{"wie":"39","objekt":"Hasselwerder Str. 6-8","adresse":"Hasselwerder Str. 8","jahr":"2015","id":"u260"},{"wie":"40","objekt":"Heidekampweg 79-85","adresse":"Heidekampweg 79","jahr":"2013","id":"u261"},{"wie":"40","objekt":"Heidekampweg 79-85","adresse":"Heidekampweg 81","jahr":"2013","id":"u262"},{"wie":"40","objekt":"Heidekampweg 79-85","adresse":"Heidekampweg 83","jahr":"2013","id":"u263"},{"wie":"40","objekt":"Heidekampweg 79-85","adresse":"Heidekampweg 85","jahr":"2013","id":"u264"},{"wie":"41","objekt":"Hasselwerder Str. 5","adresse":"Hasselwerder Str. 5","jahr":"2021","id":"u265"},{"wie":"50","objekt":"H.-Heine-Str. 62c+d","adresse":"H.-Heine-Str. 62c","jahr":"2016","id":"u266"},{"wie":"50","objekt":"H.-Heine-Str. 62c+d","adresse":"H.-Heine-Str. 62d","jahr":"2016","id":"u267"},{"wie":"51","objekt":"Annenstr. 5a+b, 8a+b","adresse":"Annenstr. 5a","jahr":"2000","id":"u268"},{"wie":"51","objekt":"Annenstr. 5a+b, 8a+b","adresse":"Annenstr. 5b","jahr":"2000","id":"u269"},{"wie":"51","objekt":"Annenstr. 5a+b, 8a+b","adresse":"Annenstr. 8a","jahr":"2000","id":"u270"},{"wie":"51","objekt":"Annenstr. 5a+b, 8a+b","adresse":"Annenstr. 8b","jahr":"2000","id":"u271"},{"wie":"52","objekt":"Dresdener Str. 79","adresse":"Dresdener Str. 79","jahr":"2004","id":"u272"},{"wie":"53","objekt":"Friedlander Str. 130a","adresse":"Friedlander Str. 130a","jahr":"2004","id":"u273"},{"wie":"54","objekt":"Neue Jakobstraße 30","adresse":"Neue Jakobstraße 30 A","jahr":"2007","id":"u274"},{"wie":"54","objekt":"Neue Jakobstraße 30","adresse":"Neue Jakobstraße 30 B","jahr":"2007","id":"u275"},{"wie":"55","objekt":"Annenstraße 34 A/B","adresse":"Annenstraße 34 A","jahr":"2009","id":"u276"},{"wie":"55","objekt":"Annenstraße 34 A/B","adresse":"Annenstraße 34 B","jahr":"2009","id":"u277"},{"wie":"56","objekt":"Neue Jakobstraße 25 A/B","adresse":"Neue Jakobstraße 25 A","jahr":"2011","id":"u278"},{"wie":"56","objekt":"Neue Jakobstraße 25 A/B","adresse":"Neue Jakobstraße 25 B","jahr":"2011","id":"u279"},{"wie":"57","objekt":"Sebastianstraße 21 A","adresse":"Sebastianstraße 21 A","jahr":"2014","id":"u280"},{"wie":"57","objekt":"Sebastianstraße 21 B","adresse":"Sebastianstraße 21 B","jahr":"2014","id":"u281"},{"wie":"57","objekt":"Dresdener Str. 95","adresse":"Dresdener Str. 95","jahr":"2014","id":"u282"},{"wie":"57","objekt":"Dresdener Str. 96","adresse":"Dresdener Str. 96","jahr":"2014","id":"u283"},{"wie":"57","objekt":"Dresdener Str. 90 A","adresse":"Dresdener Str. 90 A","jahr":"2014","id":"u284"},{"wie":"58","objekt":"H.-Heine-Str. 26","adresse":"H.-Heine-Str. 26","jahr":"2020","id":"u285"},{"wie":"58","objekt":"H.-Heine-Str. 26 A","adresse":"H.-Heine-Str. 26 A","jahr":"2020","id":"u286"},{"wie":"59","objekt":"Friedlander Str. 148","adresse":"Friedlander Str. 148","jahr":"2020","id":"u287"},{"wie":"60","objekt":"Friedlander Str. 149A","adresse":"Friedlander Str. 149A","jahr":"2020","id":"u288"},{"wie":"60","objekt":"Friedlander Str. 149B","adresse":"Friedlander Str. 149B","jahr":"2020","id":"u289"},{"wie":"61","objekt":"Friedlander Str. 128","adresse":"Friedlander Str. 128","jahr":"2025","id":"u290"},{"wie":"58","objekt":"Friedlander Str. 130","adresse":"Friedlander Str. 130","jahr":"2025","id":"u291"}],"objects":[{"wie":"1","objekt":"Köpenicker Straße 121, 121a","jahr":"2012","unitIds":["u001","u002"]},{"wie":"2","objekt":"H.-Heine Str. 13","jahr":"2012","unitIds":["u003"]},{"wie":"3","objekt":"Michaelkirchstr. 24-30","jahr":"2009","unitIds":["u004","u005","u006","u007","u008","u009","u010","u011"]},{"wie":"4","objekt":"H-Heine-Str. 2-16","jahr":"2011","unitIds":["u012","u013","u014","u015","u016","u017","u018","u019","u020","u021","u022","u023","u024","u025","u026","u027","u028","u029","u030","u031"]},{"wie":"5","objekt":"Michaelkirchplatz 11","jahr":"2009","unitIds":["u032"]},{"wie":"5","objekt":"Michaelkirchstr. 2-7","jahr":"2013","unitIds":["u033","u034","u035","u036","u037","u038"]},{"wie":"6","objekt":"Annenstr. 1-2","jahr":"2014","unitIds":["u039","u040"]},{"wie":"7","objekt":"Annenstr. 3-4","jahr":"2006","unitIds":["u041","u042","u043","u044","u045","u046"]},{"wie":"7","objekt":"H.Heine-Str. 9-11","jahr":"2007","unitIds":["u047","u048","u049","u050","u051","u052"]},{"wie":"8","objekt":"Schmidstr. 1-3","jahr":"2008","unitIds":["u053","u054","u055","u056"]},{"wie":"8","objekt":"Schmidstr. 5-7","jahr":"2007","unitIds":["u057","u058","u059","u060","u061","u062"]},{"wie":"8","objekt":"Schmidstr. 9-11","jahr":"2009","unitIds":["u063","u064","u065","u066"]},{"wie":"9","objekt":"Annenstr. 5-8","jahr":"2005","unitIds":["u067","u068","u069","u070"]},{"wie":"9","objekt":"Annenstr. 9-12","jahr":"2008","unitIds":["u071","u072","u073","u074"]},{"wie":"10","objekt":"Annenstr. 14-18","jahr":"2008","unitIds":["u075","u076","u077","u078","u079"]},{"wie":"10","objekt":"Neue Jakobstr. 16-20","jahr":"2008","unitIds":["u080","u081","u082","u083","u084"]},{"wie":"10","objekt":"Neue Jakobstr. 26-29","jahr":"2003","unitIds":["u085","u086","u087","u088"]},{"wie":"11","objekt":"Annenstr. 24-26","jahr":"2009","unitIds":["u089","u090","u091"]},{"wie":"11","objekt":"Annenstr. 27-30","jahr":"2003","unitIds":["u092","u093","u094","u095"]},{"wie":"11","objekt":"Annenstr. 31-34","jahr":"2009","unitIds":["u096","u097","u098","u099"]},{"wie":"12","objekt":"Annenstr. 20-23","jahr":"2009","unitIds":["u100","u101","u102","u103"]},{"wie":"12","objekt":"Sebastianstr. 40-44","jahr":"2009","unitIds":["u104","u105","u106","u107","u108"]},{"wie":"13","objekt":"Dresdener Str. 87-90","jahr":"2003","unitIds":["u109","u110","u111","u112"]},{"wie":"13","objekt":"Dresdener Str. 91-94","jahr":"2003","unitIds":["u113","u114","u115","u116"]},{"wie":"14","objekt":"Sebastianstr. 25-29","jahr":"2010","unitIds":["u117","u118","u119","u120","u121"]},{"wie":"14","objekt":"Sebastianstr. 30-34","jahr":"2010","unitIds":["u122","u123","u124","u125","u126"]},{"wie":"14","objekt":"Sebastianstr. 35-39","jahr":"2009","unitIds":["u127","u128","u129","u130","u131"]},{"wie":"15","objekt":"H.-Heine-Str. 45-49","jahr":"2012","unitIds":["u132","u133","u134","u135","u136"]},{"wie":"15","objekt":"H.-Heine-Str. 50-53","jahr":"2012","unitIds":["u137","u138","u139","u140"]},{"wie":"15","objekt":"H.-Heine-Str. 54-57","jahr":"2012","unitIds":["u141","u142","u143","u144"]},{"wie":"15","objekt":"H.-Heine-Str. 58-62","jahr":"2011","unitIds":["u145","u146","u147","u148","u149"]},{"wie":"16","objekt":"Annenstr. 35-41","jahr":"2007","unitIds":["u150","u151","u152","u153","u154","u155","u156"]},{"wie":"17","objekt":"Neue Jakobstr. 31-34","jahr":"2003","unitIds":["u157","u158","u159","u160"]},{"wie":"18","objekt":"Neue Jakobstr. 35-38","jahr":"2010","unitIds":["u161","u162","u163","u164"]},{"wie":"19","objekt":"Dresdener Str. 80-86","jahr":"2006","unitIds":["u165","u166","u167","u168","u169","u170","u171"]},{"wie":"20","objekt":"Berolinastr. 25-28","jahr":"2017","unitIds":["u172","u173","u174","u175"]},{"wie":"21","objekt":"Torstr. 187 - 191 C","jahr":"2014","unitIds":["u176","u177","u178","u179","u180"]},{"wie":"23","objekt":"Chausseestr.  44-47","jahr":"2020","unitIds":["u181","u182","u183","u184"]},{"wie":"23","objekt":"Schwarzkopffstr. 12-14","jahr":"2020","unitIds":["u185","u186","u187"]},{"wie":"23","objekt":"Schwarzkopffstr. 17","jahr":"2020","unitIds":["u188"]},{"wie":"23","objekt":"Schwarzkopffstr. 20","jahr":"2020","unitIds":["u189"]},{"wie":"24","objekt":"Charlottenburger Str. 113-114","jahr":"2013","unitIds":["u190","u191","u192"]},{"wie":"25","objekt":"Pistoriusstr. 106b+c","jahr":"2016","unitIds":["u193","u194"]},{"wie":"27","objekt":"E.-Kuttner Str. 26-32","jahr":"2016","unitIds":["u195","u196","u197","u198"]},{"wie":"27","objekt":"G.-Lehnig-Str. 11-19","jahr":"2016","unitIds":["u199","u200","u201","u202","u203"]},{"wie":"27","objekt":"G.-Lehnig-Str. 1-9","jahr":"2016","unitIds":["u204","u205","u206","u207","u208"]},{"wie":"28","objekt":"Goethestr./Paul-Grasse-Str.","jahr":"2021","unitIds":["u209","u210","u211","u212","u213","u214","u215","u216","u217","u218"]},{"wie":"39","objekt":"Friedlander Str. 132-138","jahr":"2013","unitIds":["u219","u220","u221","u222"]},{"wie":"30","objekt":"Friedlander Str. 140-146","jahr":"2013","unitIds":["u223","u224","u225","u226"]},{"wie":"31","objekt":"Friedlander Str. 145A, 147, 149","jahr":"2015","unitIds":["u227","u228","u229"]},{"wie":"32","objekt":"Stienitzseestr. 8-12","jahr":"2015","unitIds":["u230","u231","u232"]},{"wie":"33","objekt":"Stienitzseestr. 16+18","jahr":"2016","unitIds":["u233","u234","u235"]},{"wie":"33","objekt":"Wassermannstr. 61","jahr":"2016","unitIds":["u236"]},{"wie":"34","objekt":"Hoffmannstr. 5+6","jahr":"2016","unitIds":["u237","u238"]},{"wie":"34","objekt":"Wassermannstr. 56","jahr":"2016","unitIds":["u239"]},{"wie":"35","objekt":"Altheiderstr. 16-22","jahr":"2016","unitIds":["u240","u241","u242","u243"]},{"wie":"35","objekt":"Altheiderstr. 24-26","jahr":"2016","unitIds":["u244","u245"]},{"wie":"36","objekt":"Grimaustr. 42-48","jahr":"2004","unitIds":["u246","u247","u248","u249"]},{"wie":"37","objekt":"Grimaustr. 50-56","jahr":"2004","unitIds":["u250","u251","u252","u253"]},{"wie":"38","objekt":"Grimaustr. 58-64","jahr":"2004","unitIds":["u254","u255","u256","u257"]},{"wie":"39","objekt":"Hasselwerder Str. 6-8","jahr":"2015","unitIds":["u258","u259","u260"]},{"wie":"40","objekt":"Heidekampweg 79-85","jahr":"2013","unitIds":["u261","u262","u263","u264"]},{"wie":"41","objekt":"Hasselwerder Str. 5","jahr":"2021","unitIds":["u265"]},{"wie":"50","objekt":"H.-Heine-Str. 62c+d","jahr":"2016","unitIds":["u266","u267"]},{"wie":"51","objekt":"Annenstr. 5a+b, 8a+b","jahr":"2000","unitIds":["u268","u269","u270","u271"]},{"wie":"52","objekt":"Dresdener Str. 79","jahr":"2004","unitIds":["u272"]},{"wie":"53","objekt":"Friedlander Str. 130a","jahr":"2004","unitIds":["u273"]},{"wie":"54","objekt":"Neue Jakobstraße 30","jahr":"2007","unitIds":["u274","u275"]},{"wie":"55","objekt":"Annenstraße 34 A/B","jahr":"2009","unitIds":["u276","u277"]},{"wie":"56","objekt":"Neue Jakobstraße 25 A/B","jahr":"2011","unitIds":["u278","u279"]},{"wie":"57","objekt":"Sebastianstraße 21 A","jahr":"2014","unitIds":["u280"]},{"wie":"57","objekt":"Sebastianstraße 21 B","jahr":"2014","unitIds":["u281"]},{"wie":"57","objekt":"Dresdener Str. 95","jahr":"2014","unitIds":["u282"]},{"wie":"57","objekt":"Dresdener Str. 96","jahr":"2014","unitIds":["u283"]},{"wie":"57","objekt":"Dresdener Str. 90 A","jahr":"2014","unitIds":["u284"]},{"wie":"58","objekt":"H.-Heine-Str. 26","jahr":"2020","unitIds":["u285"]},{"wie":"58","objekt":"H.-Heine-Str. 26 A","jahr":"2020","unitIds":["u286"]},{"wie":"59","objekt":"Friedlander Str. 148","jahr":"2020","unitIds":["u287"]},{"wie":"60","objekt":"Friedlander Str. 149A","jahr":"2020","unitIds":["u288"]},{"wie":"60","objekt":"Friedlander Str. 149B","jahr":"2020","unitIds":["u289"]},{"wie":"61","objekt":"Friedlander Str. 128","jahr":"2025","unitIds":["u290"]},{"wie":"58","objekt":"Friedlander Str. 130","jahr":"2025","unitIds":["u291"]}]};
+
+// Anzahl Hauseingänge je WIE-Objekt (aus der Bestandsaufnahme-Vorlage)
+const EINGAENGE = {"1|Köpenicker Straße 121, 121a": 2, "2|H.-Heine Str. 13": 1, "3|Michaelkirchstr. 24-30": 4, "4|H-Heine-Str. 2-16": 8, "5|Michaelkirchplatz 11": 1, "5|Michaelkirchstr. 2-7": 6, "6|Annenstr. 1-2": 2, "7|Annenstr. 3-4": 2, "7|H.Heine-Str. 9-11": 2, "8|Schmidstr. 1-3": 2, "8|Schmidstr. 5-7": 2, "8|Schmidstr. 9-11": 2, "9|Annenstr. 5-8": 4, "9|Annenstr. 9-12": 4, "10|Annenstr. 14-18": 5, "10|Neue Jakobstr. 16-20": 5, "10|Neue Jakobstr. 26-29": 4, "11|Annenstr. 24-26": 3, "11|Annenstr. 27-30": 4, "11|Annenstr. 31-34": 4, "12|Annenstr. 20-23": 4, "12|Sebastianstr. 40-44": 5, "13|Dresdener Str. 87-90": 4, "13|Dresdener Str. 91-94": 4, "14|Sebastianstr. 25-29": 5, "14|Sebastianstr. 30-34": 5, "14|Sebastianstr. 35-39": 5, "15|H.-Heine-Str. 45-49": 5, "15|H.-Heine-Str. 50-53": 4, "15|H.-Heine-Str. 54-57": 4, "15|H.-Heine-Str. 58-62": 5, "16|Annenstr. 35-41": 7, "17|Neue Jakobstr. 31-34": 4, "18|Neue Jakobstr. 35-38": 4, "19|Dresdener Str. 80-86": 7, "20|Berolinastr. 25-28": 4, "21|Torstr. 187 - 191 C": 5, "23|Chausseestr.  44-47": 4, "23|Schwarzkopffstr. 12-14": 3, "23|Schwarzkopffstr. 17": 1, "23|Schwarzkopffstr. 20": 1, "24|Charlottenburger Str. 113-114": 3, "25|Pistoriusstr. 106b+c": 2, "27|E.-Kuttner Str. 26-32": 4, "27|G.-Lehnig-Str. 11-19": 5, "27|G.-Lehnig-Str. 1-9": 5, "28|Goethestr./Paul-Grasse-Str.": 10, "39|Friedlander Str. 132-138": 4, "30|Friedlander Str. 140-146": 4, "31|Friedlander Str. 145A, 147, 149": 3, "32|Stienitzseestr. 8-12": 3, "33|Stienitzseestr. 16+18": 3, "33|Wassermannstr. 61": 1, "34|Hoffmannstr. 5+6": 2, "34|Wassermannstr. 56": 1, "35|Altheiderstr. 16-22": 4, "35|Altheiderstr. 24-26": 2, "36|Grimaustr. 42-48": 4, "37|Grimaustr. 50-56": 4, "38|Grimaustr. 58-64": 4, "39|Hasselwerder Str. 6-8": 3, "40|Heidekampweg 79-85": 4, "41|Hasselwerder Str. 5": 1, "50|H.-Heine-Str. 62c+d": 2, "51|Annenstr. 5a+b, 8a+b": 2, "52|Dresdener Str. 79": 1, "53|Friedlander Str. 130a": 1, "54|Neue Jakobstraße 30": 2, "55|Annenstraße 34 A/B": 2, "56|Neue Jakobstraße 25 A/B": 2, "57|Sebastianstraße 21 A": 1, "57|Sebastianstraße 21 B": 1, "57|Dresdener Str. 95": 1, "57|Dresdener Str. 96": 1, "57|Dresdener Str. 90 A": 1, "58|H.-Heine-Str. 26": 1, "58|H.-Heine-Str. 26 A": 1, "59|Friedlander Str. 148": 1, "60|Friedlander Str. 149A": 1, "60|Friedlander Str. 149B": 1, "61|Friedlander Str. 128": 1, "58|Friedlander Str. 130": 1};
+
+const HAUSMEISTER_NAMES = [
+  'Matthias Haase',
+  'Jan Kernchen',
+  'Stefan Warnick',
+  'Oliver Hardt',
+  'Henry Krüger',
+  'Christian Knopke',
+  'Sani Lis'
+];
+
+const CATS = [
+  {key:'eingangVorbau', label:'Eingang / Vorbau', opts:'scale'},
+  {key:'waende', label:'Wände', opts:'scale'},
+  {key:'podestLauf', label:'Podest-, Laufunterseiten', opts:'scale'},
+  {key:'gelaender', label:'Geländer', opts:'scale'},
+  {key:'bodenbelag', label:'Bodenbelag', opts:'scale'},
+  {key:'hauseingangstuer', label:'Hauseingangstür', opts:'scale'},
+  {key:'kgBrandschutztueren', label:'KG-Brandschutztüren', opts:'material'},
+  {key:'windfang', label:'Windfang', opts:'scale'},
+  {key:'aluStossbleche', label:'Alu-Stoßbleche', opts:'scale'},
+  {key:'lampen', label:'Lampen', opts:'scale'},
+  {key:'tableau', label:'Tableau Gegensprechanlage', opts:'scale'},
+];
+const SCALE_OPTS = [
+  {v:'1',c:'r1'},{v:'2',c:'r2'},{v:'3',c:'r3'},{v:'4',c:'r4'},
+  {v:'n.v.',c:'rnv'},{v:'0',c:'r1'},{v:'E',c:'r2'},{v:'S',c:'r4'}
+];
+const MATERIAL_OPTS = [{v:'H',c:'r2',label:'Holz'},{v:'M',c:'r1',label:'Metall'},{v:'n.v.',c:'rnv',label:'n. vorh.'}];
+const RCLASS = {'1':'r1','2':'r2','3':'r3','4':'r4','n.v.':'rnv','0':'r1','E':'r2','S':'r4','H':'r2','M':'r1'};
+
+let state = {
+  screen: 'loading',
+  profile: null,
+  unitId: null,
+  search: '',
+  draft: {},
+  submissions: {},
+  knownNames: [],
+  lightboxSrc: null,
+};
+
+function toast(msg, durationMs){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(window.__toastTimer);
+  window.__toastTimer = setTimeout(()=>t.classList.remove('show'), durationMs || 1800);
+}
+
+function fireConfetti(){
+  const colors = ['#1B6E4A','#EE8B22','#2F8F5B','#DDA032','#5FA97D','#124F35'];
+  const layer = document.createElement('div');
+  layer.className = 'confetti-layer';
+  const count = 46;
+  for(let i=0;i<count;i++){
+    const p = document.createElement('div');
+    p.className = 'confetti-piece';
+    const left = Math.random()*100;
+    const drift = (Math.random()*160-80) + 'px';
+    const spin = (Math.random()*720 + 360) + 'deg';
+    const duration = (1.1 + Math.random()*0.9).toFixed(2) + 's';
+    const delay = (Math.random()*0.3).toFixed(2) + 's';
+    p.style.left = left + 'vw';
+    p.style.background = colors[i % colors.length];
+    p.style.setProperty('--drift', drift);
+    p.style.setProperty('--spin', spin);
+    p.style.animationDuration = duration;
+    p.style.animationDelay = delay;
+    if(Math.random() > 0.5) p.style.borderRadius = '50%';
+    layer.appendChild(p);
+  }
+  document.body.appendChild(layer);
+
+  const badge = document.createElement('div');
+  badge.className = 'success-badge';
+  badge.textContent = '✓';
+  document.body.appendChild(badge);
+
+  setTimeout(()=>{ layer.remove(); }, 2400);
+  setTimeout(()=>{ badge.remove(); }, 1200);
+}
+
+function logoSvg(){
+  return `<svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+    <path d="M30 4 A26 26 0 0 0 4 30 L18 30 A12 12 0 0 1 30 18 Z" fill="#EE8B22"/>
+    <path d="M30 4 A26 26 0 0 1 56 30 L42 30 A12 12 0 0 0 30 18 Z" fill="#FFFFFF" opacity="0.25"/>
+    <circle cx="30" cy="30" r="20" fill="#FFFFFF"/>
+    <text x="30" y="39" font-family="Poppins, sans-serif" font-weight="800" font-size="26" fill="#1B6E4A" text-anchor="middle">B</text>
+  </svg>`;
+}
+
+// Portable storage: uses Claude's built-in window.storage when running inside Claude,
+// and falls back to a small backend API (see /functions/api/storage.js) when the app
+// is hosted standalone (e.g. on Cloudflare Pages). This makes data persistence work
+// in both environments without changing any of the app logic below.
+const backendStorage = {
+  async get(key){
+    let r;
+    try{ r = await fetch('/api/storage?key='+encodeURIComponent(key)); }
+    catch(e){ throw new Error('Netzwerk nicht erreichbar (Speicher-API)'); }
+    if(r.status===404) return null;
+    if(!r.ok) throw new Error('Speicher-API Fehler beim Laden (HTTP '+r.status+')');
+    return await r.json();
+  },
+  async set(key, value){
+    let r;
+    try{ r = await fetch('/api/storage', {method:'POST', headers:{'content-type':'application/json'}, body: JSON.stringify({key, value})}); }
+    catch(e){ throw new Error('Netzwerk nicht erreichbar (Speicher-API)'); }
+    if(!r.ok) throw new Error('Speicher-API Fehler beim Speichern (HTTP '+r.status+')');
+    return await r.json();
+  },
+  async list(prefix){
+    let r;
+    try{ r = await fetch('/api/storage-list?prefix='+encodeURIComponent(prefix||'')); }
+    catch(e){ throw new Error('Netzwerk nicht erreichbar (Speicher-API)'); }
+    if(!r.ok) throw new Error('Speicher-API Fehler bei Liste (HTTP '+r.status+')');
+    return await r.json();
+  }
+};
+// Wichtig: Wenn window.storage vorhanden ist (z. B. in der Claude-Vorschau),
+// NICHT bei einem Fehler still auf die Cloudflare-Backend-API zurückfallen —
+// die gibt es dort gar nicht, und das hat bisher jeden echten Fehler als
+// "keine Internetverbindung" getarnt. Stattdessen den echten Fehler durchreichen,
+// damit er oben sichtbar wird.
+const storage = {
+  async get(key, shared){
+    if(window.storage) return await window.storage.get(key, shared);
+    return await backendStorage.get(key);
+  },
+  async set(key, value, shared){
+    if(window.storage) return await window.storage.set(key, value, shared);
+    return await backendStorage.set(key, value);
+  },
+  async list(prefix, shared){
+    if(window.storage) return await window.storage.list(prefix, shared);
+    return await backendStorage.list(prefix);
+  }
+};
+
+function nameKey(name){
+  return 'hmprofile:' + (name||'').trim().toLowerCase().replace(/[^a-z0-9äöüß]+/gi, '_').slice(0, 80);
+}
+async function loadNamedProfile(name){
+  if(!name || !name.trim()) return null;
+  try{ const r = await storage.get(nameKey(name), true); return r ? JSON.parse(r.value) : null; }catch(e){ return null; }
+}
+async function saveNamedProfile(name, selected){
+  let ok = false;
+  let detail = '';
+  try{
+    const result = await storage.set(nameKey(name), JSON.stringify({name, selected, updatedAt:new Date().toISOString()}), true);
+    ok = !!result;
+    if(!ok) detail = 'Speicher hat den Eintrag nicht bestätigt';
+  }catch(e){
+    ok = false;
+    detail = (e && e.message) ? e.message : 'Unbekannter Fehler beim Speichern';
+  }
+  await addKnownName(name);
+  return {ok, detail};
+}
+async function loadKnownNames(){
+  try{
+    const r = await storage.get('known_names', true);
+    if(r){
+      const arr = JSON.parse(r.value);
+      if(Array.isArray(arr) && arr.length) return arr;
+    }
+  }catch(e){}
+  // Backfill: no registry yet (or empty) — reconstruct from existing hmprofile: entries
+  // so names saved by an earlier version of the app still show up.
+  try{
+    const list = await storage.list('hmprofile:', true);
+    if(!list || !list.keys || !list.keys.length) return [];
+    const names = [];
+    for(const k of list.keys){
+      try{
+        const r = await storage.get(k, true);
+        if(!r) continue;
+        const data = JSON.parse(r.value);
+        const n = data && data.name ? data.name : k.replace('hmprofile:', '');
+        if(n && !names.some(x=>x.toLowerCase()===n.toLowerCase())) names.push(n);
+      }catch(e){}
+    }
+    if(names.length){
+      try{ await storage.set('known_names', JSON.stringify(names), true); }catch(e){}
+    }
+    return names;
+  }catch(e){ return []; }
+}
+async function addKnownName(name){
+  name = (name||'').trim();
+  if(!name) return;
+  try{
+    const current = await loadKnownNames();
+    const withoutDup = current.filter(n => n.toLowerCase() !== name.toLowerCase());
+    const updated = [name, ...withoutDup].slice(0, 60);
+    await storage.set('known_names', JSON.stringify(updated), true);
+    state.knownNames = updated;
+  }catch(e){}
+}
+async function loadAllSubmissions(){
+  try{
+    const list = await storage.list('unit:', true);
+    if(!list || !list.keys || !list.keys.length) return {};
+    const out = {};
+    for(const k of list.keys){
+      try{ const r = await storage.get(k, true); if(r) out[k.replace('unit:','')] = JSON.parse(r.value); }catch(e){}
+    }
+    return out;
+  }catch(e){ return {}; }
+}
+async function saveSubmission(unitId, record){
+  // Erst prüfen, ob der Eintrag überhaupt in ein Speicher-Feld passt, BEVOR
+  // wir einen Netzwerk-Call machen. Das verhindert die irreführende Meldung
+  // "keine Internetverbindung", wenn in Wirklichkeit die Fotos zu groß sind.
+  const bytes = recordSizeBytes(record);
+  const limit = storageByteLimit();
+  if(bytes > limit){
+    state.submissions[unitId] = record;
+    return {ok:false, reason:'toolarge', bytes, limit};
+  }
+  let ok = false;
+  let detail = '';
+  try{
+    const result = await storage.set('unit:'+unitId, JSON.stringify(record), true);
+    ok = !!result;
+    if(!ok) detail = 'Speicher hat den Eintrag nicht bestätigt';
+  }catch(e){
+    ok = false;
+    detail = (e && e.message) ? e.message : 'Unbekannter Fehler beim Speichern';
+  }
+  // Keep it visible locally in this session even if the network save failed,
+  // so the person doesn't lose what they just entered while working.
+  state.submissions[unitId] = record;
+  return {ok, reason: ok ? null : 'network', detail};
+}
+
+function unitStatus(unitId){
+  const r = state.submissions[unitId];
+  if(!r) return 'offen';
+  if(r.status === 'submitted') return 'done';
+  return 'progress';
+}
+function statusLabel(s){ return s === 'done' ? 'Abgeschlossen' : s === 'progress' ? 'In Bearbeitung' : 'Offen'; }
+
+async function init(){
+  state.screen = 'setup';
+  render();
+  state.submissions = await loadAllSubmissions();
+  state.knownNames = await loadKnownNames();
+  render();
+}
+
+function go(screen, extra){
+  state.screen = screen;
+  Object.assign(state, extra||{});
+  render();
+  window.scrollTo(0,0);
+}
+
+function compressImage(file){
+  return new Promise((resolve, reject)=>{
+    const reader = new FileReader();
+    reader.onload = e=>{
+      const img = new Image();
+      img.onload = ()=>{
+        const maxDim = 900;
+        let w = img.width, h = img.height;
+        if(w > h && w > maxDim){ h = Math.round(h * maxDim / w); w = maxDim; }
+        else if(h >= w && h > maxDim){ w = Math.round(w * maxDim / h); h = maxDim; }
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+
+        // Zielgröße pro Foto: möglichst unter ~180 KB, damit ein Treppenhaus
+        // mit mehreren Fotos nicht an Speicherlimits scheitert.
+        const TARGET_BYTES = 180 * 1024;
+        let quality = 0.6;
+        let dataUrl = canvas.toDataURL('image/jpeg', quality);
+        let tries = 0;
+        while(dataUrl.length * 0.75 > TARGET_BYTES && quality > 0.25 && tries < 5){
+          quality -= 0.1;
+          dataUrl = canvas.toDataURL('image/jpeg', quality);
+          tries++;
+        }
+        // Falls das Foto immer noch riesig ist (sehr großes Ausgangsbild),
+        // zusätzlich verkleinern statt nur die Qualität weiter zu drücken.
+        if(dataUrl.length * 0.75 > TARGET_BYTES * 1.8){
+          const w2 = Math.round(w * 0.7), h2 = Math.round(h * 0.7);
+          canvas.width = w2; canvas.height = h2;
+          ctx.drawImage(img, 0, 0, w2, h2);
+          dataUrl = canvas.toDataURL('image/jpeg', 0.55);
+        }
+        resolve(dataUrl);
+      };
+      img.onerror = ()=> reject(new Error('Bild konnte nicht gelesen werden'));
+      img.src = e.target.result;
+    };
+    reader.onerror = ()=> reject(new Error('Datei konnte nicht gelesen werden'));
+    reader.readAsDataURL(file);
+  });
+}
+
+function dataUrlBytes(dataUrl){
+  if(!dataUrl) return 0;
+  const idx = dataUrl.indexOf(',');
+  const b64 = idx>=0 ? dataUrl.slice(idx+1) : dataUrl;
+  return Math.round(b64.length * 0.75);
+}
+
+function recordSizeBytes(record){
+  try{ return dataUrlBytes(JSON.stringify(record)) * (4/3); }catch(e){ return 0; }
+}
+
+// Sicherheitsgrenze pro Treppenhaus-Eintrag: in der Vorschau (window.storage)
+// gilt ein Limit von 5 MB pro Schlüssel, auf der echten Cloudflare-Seite (KV)
+// deutlich mehr. Wir bleiben vorsichtshalber klar darunter.
+function storageByteLimit(){
+  return window.storage ? 4 * 1024 * 1024 : 20 * 1024 * 1024;
+}
+
+function renderLoading(){ return `<div class="empty">Lade Daten …</div>`; }
+
+function renderSetup(){
+  const q = state.search.toLowerCase();
+  const objs = DATA.objects
+    .filter(o => !q || o.objekt.toLowerCase().includes(q) || o.wie.includes(q))
+    .slice()
+    .sort((a,b)=> a.objekt.localeCompare(b.objekt, 'de'));
+  const selected = state.draft.selectedObjs || new Set();
+  return `
+  <div class="masthead">
+    <div class="left"><div class="logo-mark">${logoSvg()}</div>
+      <div class="brand">Treppenhaus-Check<small>BEROLINA Bestandsaufnahme</small></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="deadline-box">⏰ <b>Frist:</b> Bitte alle Treppenhäuser bis zum <b>28. August 2026</b> eintragen.</div>
+    <div class="howto">
+      <b>So geht's:</b> 1) Wähle unten deinen Namen aus. 2) Wähle die Gebäude aus, für die du zuständig bist (Häkchen setzen). 3) Tippe auf „Loslegen". Danach siehst du nur noch deine eigenen Gebäude.
+    </div>
+    <div class="field">
+      <label>Dein Name</label>
+      <div id="nameList">
+        ${HAUSMEISTER_NAMES.map(n => `
+          <div class="name-option ${state.draft.name===n?'active':''}" data-name="${escAttr(n)}">
+            <span class="name-dot"></span>${escHtml(n)}
+          </div>
+        `).join('')}
+      </div>
+    </div>
+    <div class="field">
+      <label>Deine Gebäude auswählen</label>
+      <input type="text" class="search" id="searchInput" placeholder="Suche nach Straße oder WIE-Nr." value="${state.search}">
+    </div>
+    <div id="objList" style="max-height:340px;overflow:auto;border-top:1px solid var(--line);">
+      ${objs.map(o => `
+        <label class="obj-row">
+          <input type="checkbox" data-wie="${o.wie}" data-objekt="${escAttr(o.objekt)}" ${selected.has(o.wie+'|'+o.objekt) ? 'checked':''}>
+          <div class="meta">
+            <div class="name"><span class="wie-tag">WIE ${o.wie}</span>${o.objekt}</div>
+            <div class="sub">${o.unitIds.length} Treppenhaus${o.unitIds.length>1?'-Einheiten':'-Einheit'} · Sanierung ${o.jahr}</div>
+          </div>
+        </label>
+      `).join('') || '<div class="empty">Keine Treffer.</div>'}
+    </div>
+  </div>
+  <button class="btn orange" id="startBtn">Loslegen</button>
+  <p class="intro" style="margin-top:14px;text-align:center;">Wähle die Objekte aus, für die du zuständig bist. Du kannst das später jederzeit unter „Auswahl ändern" anpassen.</p>
+  `;
+}
+
+function renderOverview(){
+  const myKeys = state.profile.selected || [];
+  const myUnits = DATA.units.filter(u => myKeys.includes(u.wie+'|'+u.objekt));
+  const total = myUnits.length;
+  const done = myUnits.filter(u => unitStatus(u.id)==='done').length;
+  const pct = total ? Math.round(done/total*100) : 0;
+
+  const groups = {};
+  myUnits.forEach(u=>{
+    const k = u.wie+'|'+u.objekt;
+    if(!groups[k]) groups[k] = {wie:u.wie, objekt:u.objekt, units:[]};
+    groups[k].units.push(u);
+  });
+  const q = state.search.toLowerCase();
+
+  return `
+  <div class="masthead">
+    <div class="left"><div class="logo-mark">${logoSvg()}</div>
+      <div class="brand">Meine Gebäude<small>${escHtml(state.profile.name)}</small></div>
+    </div>
+    <div class="who" id="editSelBtn">Auswahl<br>ändern</div>
+  </div>
+
+  ${total===0 ? `<div class="card"><div class="empty">Noch keine Gebäude ausgewählt.<br><br><button class="btn secondary" id="pickBtn">Gebäude auswählen</button></div></div>` : `
+  <div class="card">
+    <div class="deadline-box">⏰ <b>Frist:</b> Bitte alle Treppenhäuser bis zum <b>28. August 2026</b> eintragen.</div>
+    <div class="howto"><b>So geht's:</b> Tippe auf ein Treppenhaus in der Liste, um die Bewertung auszufüllen. Ein Kreis zeigt den Stand: <b style="color:var(--ink-soft);">weiß = offen</b>, <b style="color:var(--warn);">gelb = in Bearbeitung</b>, <b style="color:var(--ok);">grün = abgeschlossen</b>.</div>
+    <div class="progress-label"><span>Fortschritt</span><span>${done} / ${total} abgeschlossen</span></div>
+    <div class="progress-bar"><div class="fill" style="width:${pct}%"></div></div>
+  </div>
+  <input type="text" class="search" id="searchInput" placeholder="Suche in deinen Gebäuden …" value="${state.search}" style="margin-bottom:6px;">
+  ${Object.values(groups).map(g=>{
+    const filteredUnits = g.units.filter(u => !q || g.objekt.toLowerCase().includes(q) || u.adresse.toLowerCase().includes(q) || g.wie.includes(q));
+    if(!filteredUnits.length) return '';
+    return `
+    <div class="group-title"><span class="wie-tag">WIE ${g.wie}</span>${g.objekt}</div>
+    <div class="card" style="padding:4px 12px;">
+      ${filteredUnits.map(u=>{
+        const st = unitStatus(u.id);
+        return `<div class="unit-row" data-unit="${u.id}">
+          <div class="status-dot ${st}"></div>
+          <div class="name"><div class="addr">${u.adresse}</div><div class="wieline">${statusLabel(st)} · Sanierung ${u.jahr}</div></div>
+          <div class="chev">›</div>
+        </div>`;
+      }).join('')}
+    </div>`;
+  }).join('')}
+  `}
+  `;
+}
+
+function renderGlobal(){
+  const groups = {};
+  DATA.units.forEach(u=>{
+    if(!groups[u.wie]) groups[u.wie] = {wie:u.wie, total:0, done:0};
+    groups[u.wie].total++;
+    if(unitStatus(u.id)==='done') groups[u.wie].done++;
+  });
+  const totalAll = DATA.units.length;
+  const doneAll = DATA.units.filter(u=>unitStatus(u.id)==='done').length;
+  const pctAll = totalAll ? Math.round(doneAll/totalAll*100) : 0;
+  const wieList = Object.values(groups).sort((a,b)=> (parseInt(a.wie)-parseInt(b.wie)));
+
+  return `
+  <div class="masthead">
+    <div class="left"><div class="logo-mark">${logoSvg()}</div>
+      <div class="brand">Zusammenfassung<small>Alle WIE-Bereiche</small></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="howto"><b>Was ist das?</b> Diese Seite zeigt den Fortschritt über alle Hausmeister und WIE-Bereiche zusammen (nicht nur deine eigenen Gebäude). Sobald alle Hausmeister ihre Treppenhäuser eingetragen haben, kannst du hier die vollständige Tabelle als Excel-Datei herunterladen.</div>
+    <div class="progress-label"><span>Gesamtfortschritt</span><span>${doneAll} / ${totalAll} Treppenhäuser</span></div>
+    <div class="progress-bar"><div class="fill" style="width:${pctAll}%"></div></div>
+  </div>
+  <div class="legend-box">
+    <b>⏰ Frist Dateneingabe:</b> 28.08.2026 · <b>Ziel:</b> Fertigstellung 15.09.2026 (Bewirtschaftung) · Auswertung / Prioritätenliste bis 30.09.2026 (Technik)
+  </div>
+  <button class="btn orange" id="quickDownloadBtnGlobal" style="margin-bottom:10px;">⬇️ Tabelle als Excel-Datei herunterladen</button>
+  <button class="btn secondary" id="openReportBtn" style="margin-bottom:14px;">📋 Vollständigen Bericht fürs Büro öffnen</button>
+  <div class="card">
+    ${wieList.map(g=>`
+      <div class="gp-row">
+        <div class="n"><span class="wie-tag">WIE ${g.wie}</span></div>
+        <div class="frac">${g.done} / ${g.total}</div>
+      </div>
+    `).join('')}
+  </div>
+  `;
+}
+
+const CAT_COLOR = {
+  '1':'FFD7ECDE','0':'FFD7ECDE','H':'FFD7ECDE',
+  '2':'FFE7F2EC','E':'FFE7F2EC','M':'FFEFEEEC',
+  '3':'FFFBF0DB',
+  '4':'FFFBE3DE','S':'FFFBE3DE',
+  'n.v.':'FFEFEEEC'
+};
+
+async function downloadTableReport(){
+  try{
+    if(typeof ExcelJS === 'undefined'){
+      toast('⚠️ Excel-Modul konnte nicht geladen werden (Internetverbindung prüfen)');
+      return;
+    }
+    toast('Excel-Datei wird erstellt …');
+
+    const FONT = {name:'Arial', size:10};
+    const wb = new ExcelJS.Workbook();
+    wb.creator = 'Treppenhaus-Check · BEROLINA';
+    wb.created = new Date();
+    const ws = wb.addWorksheet('Tabelle1', {
+      views:[{state:'frozen', xSplit:2, ySplit:12}],
+      pageSetup:{orientation:'landscape', fitToPage:true, fitToWidth:1, fitToHeight:0}
+    });
+
+    // --- Legende (oben, wie in der Originaltabelle) ---
+    ws.getCell('A1').value = 'Legende zur Bewertung';
+    ws.getCell('A1').font = {...FONT, bold:true};
+    ws.getCell('Q1').value = 'Themen';
+    ws.getCell('Q1').font = {...FONT, bold:true};
+
+    const legendRows = [
+      [1,'sehr gut','kein Handlungsbedarf'],
+      [2,'gut','geringer Handlungsbedarf'],
+      [3,'mangelhaft','kurzfristiger Handlungsbedarf (< 3 Monate)'],
+      [4,'stark mangelhaft','dringender Handlungsbedarf (sofort)']
+    ];
+    const themen = [
+      'Durchsetzung einheitliche Bewertung',
+      'Festlegung Fotodokumentation und Ablage',
+      'Fertigstellung 15.09.2026 - Bewirtschaftung',
+      'Auswertung (Prioritätenliste) bis 30.09.2026 - Bereich Technik'
+    ];
+    legendRows.forEach((r,i)=>{
+      const row = i+2;
+      ws.getCell('A'+row).value = r[0];
+      ws.getCell('B'+row).value = r[1];
+      ws.mergeCells('C'+row+':L'+row);
+      ws.getCell('C'+row).value = r[2];
+      ws.getCell('Q'+row).value = themen[i];
+      ['A','B','C','Q'].forEach(col=> ws.getCell(col+row).font = FONT);
+    });
+    ws.getCell('A6').value = 'n.v.'; ws.getCell('B6').value = 'nicht vorhanden';
+    ws.getCell('A7').value = 'alternativ';
+    ws.getCell('A8').value = 0; ws.getCell('B8').value = 'kein Sanierungsbedarf';
+    ws.getCell('A9').value = 'E'; ws.getCell('B9').value = 'noch erhaltungswürdig';
+    ws.getCell('A10').value = 'S'; ws.getCell('B10').value = 'erhebliche Verschmutzung / Beschädigung';
+    for(let r=6;r<=10;r++){ ['A','B'].forEach(col=> ws.getCell(col+r).font = FONT); }
+
+    // --- Kopfzeile (Zeile 12) ---
+    const headers = ['WIE','Objekte','Eingänge','TH','letzte Sanierung',
+      ...CATS.map(c=> c.key==='kgBrandschutztueren' ? 'KG-Brandschutztüren (Holz=H oder Metall=M)' : c.label),
+      'Bemerkungen','Status','Bearbeitet von','Zuletzt aktualisiert'];
+    const headerRow = ws.getRow(12);
+    headers.forEach((h, idx)=>{
+      const cell = headerRow.getCell(idx+1);
+      cell.value = h;
+      cell.font = {...FONT, bold:true, color:{argb:'FFFFFFFF'}};
+      cell.fill = {type:'pattern', pattern:'solid', fgColor:{argb:'FF1B6E4A'}};
+      cell.alignment = {vertical:'middle', horizontal:'center', wrapText:true};
+    });
+    headerRow.height = 44;
+
+    const widths = [5,30,9,6,12, 13,11,17,11,11,14,22,11,13,10,17, 36,13,17,17];
+    widths.forEach((w,i)=> ws.getColumn(i+1).width = w);
+
+    // --- Gruppen & Zeilen ---
+    const groups = {};
+    DATA.units.forEach(u=>{
+      const k = u.wie+'|'+u.objekt;
+      if(!groups[k]) groups[k] = {wie:u.wie, objekt:u.objekt, units:[]};
+      groups[k].units.push(u);
+    });
+    const wieSorted = Object.values(groups).sort((a,b)=> parseInt(a.wie)-parseInt(b.wie));
+
+    let rowIdx = 13;
+    wieSorted.forEach(g=>{
+      const groupRow = ws.getRow(rowIdx);
+      groupRow.getCell(1).value = parseInt(g.wie);
+      groupRow.getCell(2).value = g.objekt;
+      const eKey = g.wie+'|'+g.objekt;
+      groupRow.getCell(3).value = (EINGAENGE[eKey] !== undefined) ? EINGAENGE[eKey] : '';
+      groupRow.getCell(4).value = g.units.length;
+      groupRow.getCell(5).value = parseInt(g.units[0].jahr) || g.units[0].jahr;
+      [1,2,3,4,5].forEach(c=>{
+        const cell = groupRow.getCell(c);
+        cell.font = {...FONT, bold:true};
+        cell.fill = {type:'pattern', pattern:'solid', fgColor:{argb:'FFE7F2EC'}};
+      });
+      rowIdx++;
+
+      g.units.forEach(u=>{
+        const row = ws.getRow(rowIdx);
+        const addrCell = row.getCell(2);
+        addrCell.value = u.adresse;
+        addrCell.font = FONT;
+        addrCell.alignment = {indent:1};
+
+        const rec = state.submissions[u.id];
+        const vals = rec ? (rec.values||{}) : {};
+        CATS.forEach((c, ci)=>{
+          const cell = row.getCell(6+ci);
+          const v = vals[c.key];
+          cell.value = v || '';
+          cell.font = FONT;
+          cell.alignment = {horizontal:'center'};
+          if(v && CAT_COLOR[v]) cell.fill = {type:'pattern', pattern:'solid', fgColor:{argb:CAT_COLOR[v]}};
+        });
+
+        const bemCell = row.getCell(6+CATS.length);
+        bemCell.value = rec && rec.bemerkungen ? rec.bemerkungen : '';
+        bemCell.font = FONT;
+        bemCell.alignment = {wrapText:true, vertical:'top'};
+
+        const st = unitStatus(u.id);
+        const stCell = row.getCell(6+CATS.length+1);
+        stCell.value = statusLabel(st);
+        stCell.font = FONT;
+
+        const byCell = row.getCell(6+CATS.length+2);
+        byCell.value = rec && rec.submittedBy ? rec.submittedBy : '';
+        byCell.font = FONT;
+
+        const dateCell = row.getCell(6+CATS.length+3);
+        dateCell.value = rec && rec.updatedAt ? formatDate(rec.updatedAt) : '';
+        dateCell.font = FONT;
+
+        rowIdx++;
+      });
+    });
+
+    // dünne Rahmen um die gesamte Tabelle
+    const lastCol = headers.length;
+    for(let r=12; r<rowIdx; r++){
+      for(let c=1; c<=lastCol; c++){
+        ws.getCell(r,c).border = {
+          top:{style:'thin', color:{argb:'FFDCE5DE'}},
+          left:{style:'thin', color:{argb:'FFDCE5DE'}},
+          right:{style:'thin', color:{argb:'FFDCE5DE'}},
+          bottom:{style:'thin', color:{argb:'FFDCE5DE'}}
+        };
+      }
+    }
+
+    const buffer = await wb.xlsx.writeBuffer();
+    const blob = new Blob([buffer], {type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'Treppenhaus-Check-Bericht.xlsx';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(()=> URL.revokeObjectURL(url), 3000);
+    toast('Excel-Tabelle heruntergeladen ✓');
+  }catch(err){
+    toast('Download fehlgeschlagen: ' + (err && err.message ? err.message : 'unbekannter Fehler'));
+  }
+}
+
+function countAllPhotos(){
+  let n = 0;
+  Object.values(state.submissions).forEach(rec=>{
+    if(!rec || !rec.photos) return;
+    Object.values(rec.photos).forEach(arr=> n += (arr ? arr.length : 0));
+  });
+  return n;
+}
+
+function sanitizeFileName(s){
+  return String(s||'').replace(/[\\/:*?"<>|]/g, '-').replace(/\s+/g,' ').trim();
+}
+
+async function downloadAllPhotos(){
+  try{
+    if(typeof JSZip === 'undefined'){
+      toast('⚠️ ZIP-Modul konnte nicht geladen werden (Internetverbindung prüfen)');
+      return;
+    }
+    const total = countAllPhotos();
+    if(total === 0){ toast('Es wurden noch keine Fotos hochgeladen'); return; }
+    toast('Fotos werden gepackt …');
+
+    const zip = new JSZip();
+    const catLabel = {};
+    CATS.forEach(c=> catLabel[c.key] = c.label);
+
+    DATA.units.forEach(u=>{
+      const rec = state.submissions[u.id];
+      if(!rec || !rec.photos) return;
+      const photoCats = Object.keys(rec.photos).filter(k=> rec.photos[k] && rec.photos[k].length);
+      if(!photoCats.length) return;
+
+      const folder = sanitizeFileName('WIE ' + u.wie + ' - ' + u.objekt) + '/' + sanitizeFileName(u.adresse);
+      photoCats.forEach(catKey=>{
+        const label = sanitizeFileName(catLabel[catKey] || catKey);
+        rec.photos[catKey].forEach((dataUrl, idx)=>{
+          const m = /^data:image\/(\w+);base64,(.*)$/.exec(dataUrl || '');
+          if(!m) return;
+          const ext = m[1] === 'jpeg' ? 'jpg' : m[1];
+          const fileName = `${folder}/${label}${photoCats.length>1 || rec.photos[catKey].length>1 ? '-'+(idx+1) : ''}.${ext}`;
+          zip.file(fileName, m[2], {base64:true});
+        });
+      });
+    });
+
+    const blob = await zip.generateAsync({type:'blob'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'Treppenhaus-Check-Fotos.zip';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(()=> URL.revokeObjectURL(url), 3000);
+    toast('Fotos heruntergeladen ✓ (' + total + ')');
+  }catch(err){
+    toast('Foto-Download fehlgeschlagen: ' + (err && err.message ? err.message : 'unbekannter Fehler'));
+  }
+}
+
+function reportTableRowsHtml(){
+  const groups = {};
+  DATA.units.forEach(u=>{
+    const k = u.wie+'|'+u.objekt;
+    if(!groups[k]) groups[k] = {wie:u.wie, objekt:u.objekt, units:[]};
+    groups[k].units.push(u);
+  });
+  const wieSorted = Object.values(groups).sort((a,b)=>parseInt(a.wie)-parseInt(b.wie));
+  const colCount = 6 + CATS.length;
+
+  return wieSorted.map(g=>{
+    const groupHeader = `<tr class="grouprow"><td colspan="${colCount}"><span class="wie-tag">WIE ${g.wie}</span>${escHtml(g.objekt)}</td></tr>`;
+    const rows = g.units.map(u=>{
+      const rec = state.submissions[u.id];
+      const st = unitStatus(u.id);
+      const vals = rec ? (rec.values || {}) : {};
+      const photoCount = rec && rec.photos ? Object.values(rec.photos).reduce((a,arr)=>a+(arr?arr.length:0),0) : 0;
+      const catCells = CATS.map(c=>{
+        const v = vals[c.key];
+        const cls = v ? (RCLASS[v]||'') : '';
+        return `<td class="cv ${cls}">${v ? v : '–'}</td>`;
+      }).join('');
+      return `<tr>
+        <td class="addr">${escHtml(u.adresse)}</td>
+        <td>${u.jahr}</td>
+        ${catCells}
+        <td class="bem">${rec && rec.bemerkungen ? escHtml(rec.bemerkungen) : ''}</td>
+        <td><span class="badge ${st}">${statusLabel(st)}</span></td>
+        <td>${rec && rec.submittedBy ? escHtml(rec.submittedBy) : ''}</td>
+        <td>${photoCount ? photoCount + ' 📷' : ''}</td>
+      </tr>`;
+    }).join('');
+    return groupHeader + rows;
+  }).join('');
+}
+
+function reportBodyHtml(){
+  const groups = {};
+  DATA.units.forEach(u=>{
+    const k = u.wie+'|'+u.objekt;
+    if(!groups[k]) groups[k] = {wie:u.wie, objekt:u.objekt, units:[]};
+    groups[k].units.push(u);
+  });
+  const wieSorted = Object.values(groups).sort((a,b)=>parseInt(a.wie)-parseInt(b.wie));
+
+  return wieSorted.map(g=>{
+    const rows = g.units.map(u=>{
+      const rec = state.submissions[u.id];
+      const st = unitStatus(u.id);
+      if(!rec){
+        return `<div class="report-unit">
+          <div class="ru-head">
+            <div><div class="ru-title">${u.adresse}</div><div class="ru-sub">Sanierung ${u.jahr}</div></div>
+            <div class="report-badge offen">Offen</div>
+          </div>
+        </div>`;
+      }
+      const vals = rec.values || {};
+      const photos = rec.photos || {};
+      const photoList = [];
+      Object.keys(photos).forEach(catKey=>{
+        (photos[catKey]||[]).forEach(src=> photoList.push({catKey, src}));
+      });
+      return `<div class="report-unit">
+        <div class="ru-head">
+          <div><div class="ru-title">${u.adresse}</div><div class="ru-sub">Sanierung ${u.jahr}</div></div>
+          <div class="report-badge ${st}">${statusLabel(st)}</div>
+        </div>
+        <div class="rv-grid">
+          ${CATS.map(c=>{
+            const v = vals[c.key];
+            const cls = v ? (RCLASS[v]||'') : '';
+            return `<div><div class="k">${c.label}</div><div class="v ${cls}">${v ? v : '—'}</div></div>`;
+          }).join('')}
+        </div>
+        ${rec.bemerkungen ? `<div class="rv-bem">${escHtml(rec.bemerkungen)}</div>` : ''}
+        ${photoList.length ? `<div class="rv-photos">${photoList.map(p=>`<img src="${p.src}" data-lightbox="${p.src}">`).join('')}</div>` : ''}
+        <div class="rv-meta">${rec.submittedBy ? `Bearbeitet von ${escHtml(rec.submittedBy)}` : ''}${rec.updatedAt ? ' · zuletzt ' + formatDate(rec.updatedAt) : ''}</div>
+      </div>`;
+    }).join('');
+    return `<div class="group-title"><span class="wie-tag">WIE ${g.wie}</span>${g.objekt}</div>${rows}`;
+  }).join('');
+}
+
+function renderReport(){
+  const totalAll = DATA.units.length;
+  const doneAll = DATA.units.filter(u=>unitStatus(u.id)==='done').length;
+  const progressAll = DATA.units.filter(u=>unitStatus(u.id)==='progress').length;
+
+  return `
+  <div class="top-nav">
+    <div class="back" id="backBtn">‹</div>
+    <div class="title"><div class="t1">Bericht für das Büro</div><div class="t2">Stand: ${formatDate(new Date().toISOString())}</div></div>
+  </div>
+  <div class="card">
+    <div class="howto"><b>Was ist das?</b> Hier stehen alle erfassten Daten aus allen Gebäuden zusammen, egal wer sie eingetragen hat. Zum Weiterverarbeiten (z. B. für die Prioritätenliste) einfach die Excel-Datei herunterladen.</div>
+    <div class="rv-grid" style="grid-template-columns:1fr 1fr 1fr;">
+      <div><div class="k">Gesamt</div><div class="v">${totalAll}</div></div>
+      <div><div class="k">Abgeschlossen</div><div class="v r1">${doneAll}</div></div>
+      <div><div class="k">In Bearbeitung</div><div class="v r3">${progressAll}</div></div>
+    </div>
+  </div>
+  <button class="btn secondary" id="printBtn" style="margin-bottom:10px;">⬇️ Tabelle als Excel-Datei herunterladen</button>
+  <button class="btn ghost" id="photosBtn" style="margin-bottom:16px;">📷 Alle Fotos herunterladen (ZIP · ${countAllPhotos()})</button>
+  ${reportBodyHtml()}
+  <div class="legend-box" style="margin-top:16px;">
+    <b>Legende:</b> 1 sehr gut – kein Handlungsbedarf &nbsp;·&nbsp; 2 gut – geringer Handlungsbedarf &nbsp;·&nbsp; 3 mangelhaft – kurzfristiger Handlungsbedarf (&lt; 3 Monate) &nbsp;·&nbsp; 4 stark mangelhaft – dringender Handlungsbedarf (sofort) &nbsp;·&nbsp; n.v. nicht vorhanden<br>
+    Alternativ: 0 kein Sanierungsbedarf &nbsp;·&nbsp; E noch erhaltungswürdig &nbsp;·&nbsp; S erhebliche Verschmutzung/Beschädigung<br>
+    KG-Brandschutztüren: H = Holz &nbsp;·&nbsp; M = Metall
+  </div>
+  `;
+}
+
+function renderStats(){
+  const records = Object.values(state.submissions);
+  const totalUnits = DATA.units.length;
+  const withData = records.length;
+
+  // category distributions
+  const dist = {};
+  CATS.forEach(c=> dist[c.key] = {});
+  records.forEach(rec=>{
+    const vals = rec.values || {};
+    CATS.forEach(c=>{
+      const v = vals[c.key];
+      if(v) dist[c.key][v] = (dist[c.key][v]||0) + 1;
+    });
+  });
+
+  const scaleCats = CATS.filter(c=>c.opts==='scale');
+  const materialCats = CATS.filter(c=>c.opts==='material');
+
+  // total mangel counts (3+4+S) for KPI
+  let totalBad = 0, totalRated = 0;
+  scaleCats.forEach(c=>{
+    const d = dist[c.key];
+    Object.keys(d).forEach(k=>{
+      totalRated += d[k];
+      if(k==='3'||k==='4'||k==='S') totalBad += d[k];
+    });
+  });
+  const badPct = totalRated ? Math.round(totalBad/totalRated*100) : 0;
+
+  // priority list: score per unit based on bad ratings
+  const scored = [];
+  DATA.units.forEach(u=>{
+    const rec = state.submissions[u.id];
+    if(!rec) return;
+    const vals = rec.values || {};
+    let score = 0;
+    const badCats = [];
+    CATS.forEach(c=>{
+      const v = vals[c.key];
+      if(v==='4'){ score += 3; badCats.push(c.label); }
+      else if(v==='S'){ score += 2; badCats.push(c.label); }
+      else if(v==='3'){ score += 1; badCats.push(c.label); }
+    });
+    if(score > 0) scored.push({u, score, badCats});
+  });
+  scored.sort((a,b)=> b.score - a.score);
+  const top = scored.slice(0, 12);
+
+  return `
+  <div class="masthead">
+    <div class="left"><div class="logo-mark">${logoSvg()}</div>
+      <div class="brand">Statistik<small>Für die Auswertung</small></div>
+    </div>
+  </div>
+
+  <div class="howto" style="margin-bottom:14px;">
+    <b>Was ist das?</b> Diese Seite ist für die Auswertung gedacht. Sie zeigt, welche Bauteile am häufigsten Handlungsbedarf haben und listet die Treppenhäuser mit dem größten Sanierungsbedarf ganz unten auf.
+  </div>
+
+  <div class="kpi-grid" style="margin-bottom:14px;">
+    <div class="kpi-card"><div class="kv">${withData} / ${totalUnits}</div><div class="kl">Treppenhäuser mit Daten</div></div>
+    <div class="kpi-card"><div class="kv">${badPct}%</div><div class="kl">Bewertungen mit Handlungsbedarf (3, 4, S)</div></div>
+  </div>
+
+  <div class="legend-box">
+    Grundlage für die <b>Prioritätenliste</b> gemäß Zielvorgabe: Auswertung bis 30.09.2026 (Bereich Technik).
+  </div>
+
+  <button class="btn orange" id="quickDownloadBtnStats" style="margin-bottom:14px;">⬇️ Tabelle als Excel-Datei herunterladen</button>
+
+  <div class="card">
+    <div style="font-family:'Poppins',sans-serif;font-weight:700;font-size:14px;margin-bottom:14px;">Bewertungsverteilung je Kategorie</div>
+    ${scaleCats.map(c=>{
+      const d = dist[c.key];
+      const total = Object.values(d).reduce((a,b)=>a+b,0);
+      if(!total) return `
+        <div class="stat-row">
+          <div class="stat-label"><span>${c.label}</span><span class="n">keine Daten</span></div>
+          <div class="stat-bar"><div class="seg" style="width:100%;background:var(--line);"></div></div>
+        </div>`;
+      const order = ['1','2','3','4','n.v.','0','E','S'];
+      const segs = order.filter(k=>d[k]).map(k=>{
+        const w = (d[k]/total*100).toFixed(1);
+        return `<div class="seg ${RCLASS[k]}" style="width:${w}%;" title="${k}: ${d[k]}"></div>`;
+      }).join('');
+      return `
+      <div class="stat-row">
+        <div class="stat-label"><span>${c.label}</span><span class="n">${total} bewertet</span></div>
+        <div class="stat-bar">${segs}</div>
+      </div>`;
+    }).join('')}
+    <div class="stat-legend">
+      <span><span class="dot" style="background:var(--ok);"></span>1 sehr gut</span>
+      <span><span class="dot" style="background:#5FA97D;"></span>2 gut</span>
+      <span><span class="dot" style="background:var(--warn);"></span>3 mangelhaft</span>
+      <span><span class="dot" style="background:var(--bad);"></span>4 stark mangelhaft</span>
+      <span><span class="dot" style="background:var(--ink-soft);"></span>n.v.</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div style="font-family:'Poppins',sans-serif;font-weight:700;font-size:14px;margin-bottom:10px;">KG-Brandschutztüren</div>
+    ${materialCats.map(c=>{
+      const d = dist[c.key];
+      const total = Object.values(d).reduce((a,b)=>a+b,0);
+      return `<div class="rv-meta" style="border-top:none;padding-top:0;">
+        ${total ? `Holz (H): <b>${d['H']||0}</b> &nbsp;·&nbsp; Metall (M): <b>${d['M']||0}</b> &nbsp;·&nbsp; nicht vorhanden: <b>${d['n.v.']||0}</b> &nbsp;·&nbsp; erfasst: ${total}` : 'Noch keine Daten'}
+      </div>`;
+    }).join('')}
+  </div>
+
+  <div class="group-title">Prioritätenliste · größter Handlungsbedarf</div>
+  <div class="card" style="padding:4px 12px;">
+    ${top.length ? top.map((item,i)=>`
+      <div class="prio-row">
+        <div class="prio-rank">${i+1}</div>
+        <div class="pn">
+          <div class="pa">${item.u.adresse}</div>
+          <div class="pc"><span class="wie-tag">WIE ${item.u.wie}</span>${item.badCats.slice(0,3).join(' · ')}${item.badCats.length>3 ? ' …' : ''}</div>
+        </div>
+        <div class="prio-score">${item.score} Pkt.</div>
+      </div>
+    `).join('') : `<div class="empty">Noch keine Bewertungen mit Handlungsbedarf erfasst.</div>`}
+  </div>
+  `;
+}
+
+function renderForm(){
+  const u = DATA.units.find(x=>x.id===state.unitId);
+  const existing = state.submissions[u.id];
+  const isDone = existing && existing.status === 'submitted';
+  const values = state.draft.values || (existing ? {...existing.values} : {});
+  const photos = state.draft.photos || (existing && existing.photos ? JSON.parse(JSON.stringify(existing.photos)) : {});
+  const bemerkungen = state.draft.bemerkungen !== undefined ? state.draft.bemerkungen : (existing ? existing.bemerkungen : '');
+
+  const allFilled = CATS.every(c => values[c.key]);
+
+  return `
+  <div class="top-nav">
+    <div class="back" id="backBtn">‹</div>
+    <div class="title"><div class="t1">${u.adresse}</div><div class="t2"><span class="wie-tag">WIE ${u.wie}</span>${u.objekt} · Sanierung ${u.jahr}</div></div>
+  </div>
+
+  ${isDone ? `
+  <div class="stamp-box">
+    <div class="icon">✓</div>
+    <div class="txt"><b>Geprüft &amp; abgesendet</b>von ${escHtml(existing.submittedBy)} am ${formatDate(existing.submittedAt)}</div>
+  </div>` : `
+  <div class="deadline-box">⏰ Bitte bis zum <b>28. August 2026</b> ausfüllen.</div>
+  <div class="howto">
+    <b>So geht's:</b> Tippe bei jedem Punkt unten auf eine Bewertung (1–4, n.v. oder alternativ 0/E/S). Nochmal antippen hebt die Auswahl wieder auf. Über 📷 kannst du optional ein Foto zu dem Punkt hinzufügen. Bemerkungen sind freiwillig. Sobald alle 11 Punkte bewertet sind, erscheint unten der „Absenden"-Button.
+  </div>`}
+
+  <div class="legend-box">
+    <b>1</b> sehr gut &nbsp; <b>2</b> gut &nbsp; <b>3</b> mangelhaft &nbsp; <b>4</b> stark mangelhaft &nbsp; <b>n.v.</b> nicht vorhanden<br>
+    Alternativ: <b>0</b> kein Sanierungsbedarf &nbsp; <b>E</b> noch erhaltungswürdig &nbsp; <b>S</b> erhebliche Verschmutzung/Beschädigung
+  </div>
+
+  <div class="card">
+    ${CATS.map(c=>{
+      const opts = c.opts === 'material' ? MATERIAL_OPTS : SCALE_OPTS;
+      const val = values[c.key];
+      const catPhotos = photos[c.key] || [];
+      return `
+      <div class="cat-block">
+        <div class="cat-name">${c.label} ${!val ? '<span class="req">*</span>' : ''}</div>
+        <div class="chip-row">
+          ${opts.map(o=>`<span class="chip ${c.opts==='material'?'':'small'} ${val===o.v?'active '+o.c:''}" data-cat="${c.key}" data-val="${o.v}">${o.v}${o.label?`<br><span style="font-size:9.5px;font-weight:500;opacity:0.85;">${o.label}</span>`:''}</span>`).join('')}
+        </div>
+        <div class="photo-strip" data-photostrip="${c.key}">
+          ${catPhotos.map((src,i)=>`
+            <div class="photo-thumb">
+              <img src="${src}" data-lightbox="${src}">
+              ${!isDone ? `<div class="rm" data-rmphoto="${c.key}" data-idx="${i}">×</div>` : ''}
+            </div>`).join('')}
+          ${!isDone ? `
+          <label class="photo-add">
+            📷<span>Foto</span>
+            <input type="file" accept="image/*" capture="environment" class="photo-input" data-photocat="${c.key}">
+          </label>` : ''}
+        </div>
+      </div>`;
+    }).join('')}
+    <div class="field" style="margin-top:4px;">
+      <label>Bemerkungen (optional)</label>
+      <textarea id="bemerkungenInput" placeholder="Auffälligkeiten, Details …" ${isDone?'disabled':''}>${escHtml(bemerkungen)}</textarea>
+    </div>
+  </div>
+
+  ${!isDone ? `
+    <button class="btn orange" id="submitBtn" ${allFilled ? '' : 'disabled'}>${allFilled ? 'Absenden' : `Noch ${CATS.filter(c=>!values[c.key]).length} Feld(er) offen`}</button>
+    <p class="intro" style="margin-top:10px;text-align:center;">Deine Eingaben werden automatisch gespeichert. Der Absenden-Button erscheint aktiv, sobald alle Felder ausgefüllt sind.</p>
+  ` : `<button class="btn secondary" id="reopenBtn">Bearbeitung wieder öffnen</button>`}
+  `;
+}
+
+function formatDate(iso){
+  try{
+    const d = new Date(iso);
+    return d.toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric'}) + ' ' + d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
+  }catch(e){ return iso; }
+}
+function escHtml(s){ return (s||'').replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function escAttr(s){ return escHtml(s).replace(/'/g,'&#39;'); }
+
+function render(){
+  const app = document.getElementById('app');
+  try{
+    let html = '';
+    if(state.screen==='loading') html = renderLoading();
+    else if(state.screen==='setup') html = renderSetup();
+    else if(state.screen==='overview') html = renderOverview();
+    else if(state.screen==='global') html = renderGlobal();
+    else if(state.screen==='stats') html = renderStats();
+    else if(state.screen==='report') html = renderReport();
+    else if(state.screen==='form') html = renderForm();
+
+    const showTabs = state.screen==='overview' || state.screen==='global' || state.screen==='stats';
+    app.innerHTML = html + (showTabs ? `
+      <div class="tabbar">
+        <div class="tab ${state.screen==='overview'?'active':''}" data-tab="overview"><span class="ico">🏠</span>Meine Gebäude</div>
+        <div class="tab ${state.screen==='global'?'active':''}" data-tab="global"><span class="ico">📋</span>Zusammenfassung</div>
+        <div class="tab ${state.screen==='stats'?'active':''}" data-tab="stats"><span class="ico">📊</span>Statistik</div>
+      </div>` : '') + (state.lightboxSrc ? `
+      <div class="lightbox" id="lightbox"><div class="close" id="lightboxClose">×</div><img src="${state.lightboxSrc}"></div>` : '');
+
+    bindEvents();
+  }catch(err){
+    console.error('Render-Fehler:', err);
+    app.innerHTML = `
+      <div class="masthead"><div class="left"><div class="logo-mark">${logoSvg()}</div>
+        <div class="brand">Treppenhaus-Check<small>BEROLINA</small></div></div>
+      </div>
+      <div class="card">
+        <div class="howto" style="background:var(--bad-bg);color:#8a2b1c;">
+          <b>Es ist ein unerwarteter Fehler aufgetreten.</b><br>
+          Deine bisherigen Eingaben sind nicht verloren. Bitte lade die Seite neu.
+        </div>
+        <button class="btn orange" style="margin-top:12px;" onclick="location.reload()">Seite neu laden</button>
+      </div>`;
+  }
+}
+
+function bindEvents(){
+  const app = document.getElementById('app');
+
+  app.querySelectorAll('.tab').forEach(el=>{ el.onclick = ()=> go(el.dataset.tab, {search:''}); });
+
+  app.querySelectorAll('[data-lightbox]').forEach(el=>{
+    el.onclick = ()=>{ state.lightboxSrc = el.dataset.lightbox; render(); };
+  });
+  const lb = document.getElementById('lightbox');
+  if(lb){
+    const closeLb = ()=>{ state.lightboxSrc = null; render(); };
+    document.getElementById('lightboxClose').onclick = closeLb;
+    lb.onclick = e=>{ if(e.target === lb) closeLb(); };
+  }
+
+  if(state.screen==='setup'){
+    const searchInput = document.getElementById('searchInput');
+
+    async function selectName(name){
+      state.draft.name = name;
+      if(state.draft.lastLookupName === name){ render(); return; }
+      const saved = await loadNamedProfile(name);
+      if(state.draft.name !== name) return; // changed again meanwhile
+      state.draft.lastLookupName = name;
+      if(saved && saved.selected && saved.selected.length){
+        state.draft.selectedObjs = new Set(saved.selected);
+        render();
+        toast('Vorherige Auswahl für ' + name + ' geladen ✓');
+      } else {
+        // no saved selection for this name — make sure nobody else's picks leak in
+        state.draft.selectedObjs = new Set();
+        render();
+      }
+    }
+
+    app.querySelectorAll('.name-option').forEach(el=>{
+      el.onclick = ()=> selectName(el.dataset.name);
+    });
+    if(searchInput) searchInput.oninput = e=>{ state.search = e.target.value; render(); preserveFocus(searchInput); };
+    app.querySelectorAll('#objList input[type=checkbox]').forEach(cb=>{
+      cb.onchange = ()=>{
+        const key = cb.dataset.wie + '|' + cb.dataset.objekt;
+        if(!state.draft.selectedObjs) state.draft.selectedObjs = new Set();
+        if(cb.checked) state.draft.selectedObjs.add(key);
+        else state.draft.selectedObjs.delete(key);
+      };
+    });
+    const startBtn = document.getElementById('startBtn');
+    if(startBtn) startBtn.onclick = async ()=>{
+      const name = (state.draft.name || '').trim();
+      if(!name){ toast('Bitte Namen auswählen'); return; }
+      const selected = Array.from(state.draft.selectedObjs || []);
+      const result = await saveNamedProfile(name, selected);
+      state.profile = { name, selected };
+      state.draft = {};
+      go('overview', {search:''});
+      if(!result.ok){
+        toast('⚠️ Auswahl konnte nicht gespeichert werden: ' + (result.detail || 'unbekannter Fehler'), 4500);
+      }
+    };
+  }
+
+  if(state.screen==='overview'){
+    const searchInput = document.getElementById('searchInput');
+    if(searchInput) searchInput.oninput = e=>{ state.search = e.target.value; render(); preserveFocus(searchInput); };
+    const editBtn = document.getElementById('editSelBtn');
+    if(editBtn) editBtn.onclick = ()=>{
+      state.draft.selectedObjs = new Set(state.profile.selected);
+      state.draft.name = state.profile.name;
+      state.search = '';
+      go('setup');
+    };
+    const pickBtn = document.getElementById('pickBtn');
+    if(pickBtn) pickBtn.onclick = ()=>{
+      state.draft.selectedObjs = new Set(state.profile.selected);
+      state.draft.name = state.profile.name;
+      go('setup');
+    };
+    app.querySelectorAll('.unit-row').forEach(el=>{
+      el.onclick = ()=>{ state.draft = {}; go('form', {unitId: el.dataset.unit}); };
+    });
+  }
+
+  if(state.screen==='global'){
+    const btn = document.getElementById('openReportBtn');
+    if(btn) btn.onclick = ()=> go('report');
+    const quickBtn = document.getElementById('quickDownloadBtnGlobal');
+    if(quickBtn) quickBtn.onclick = ()=> downloadTableReport();
+  }
+
+  if(state.screen==='stats'){
+    const quickBtn = document.getElementById('quickDownloadBtnStats');
+    if(quickBtn) quickBtn.onclick = ()=> downloadTableReport();
+  }
+
+  if(state.screen==='report'){
+    const backBtn = document.getElementById('backBtn');
+    if(backBtn) backBtn.onclick = ()=> go('global');
+    const printBtn = document.getElementById('printBtn');
+    if(printBtn) printBtn.onclick = ()=> downloadTableReport();
+    const photosBtn = document.getElementById('photosBtn');
+    if(photosBtn) photosBtn.onclick = ()=> downloadAllPhotos();
+  }
+
+  if(state.screen==='form'){
+    const backBtn = document.getElementById('backBtn');
+    if(backBtn) backBtn.onclick = ()=> go('overview');
+
+    app.querySelectorAll('.chip[data-cat]').forEach(chip=>{
+      chip.onclick = async ()=>{
+        if(!state.draft.values) state.draft.values = {};
+        const cat = chip.dataset.cat, val = chip.dataset.val;
+        if(state.draft.values[cat] === val){ delete state.draft.values[cat]; }
+        else { state.draft.values[cat] = val; }
+        await autosave();
+        render();
+      };
+    });
+
+    app.querySelectorAll('.photo-input').forEach(inp=>{
+      inp.onchange = async e=>{
+        const file = e.target.files[0];
+        if(!file) return;
+        toast('Foto wird gespeichert …');
+        try{
+          const dataUrl = await compressImage(file);
+          const cat = inp.dataset.photocat;
+          if(!state.draft.photos) state.draft.photos = {};
+          if(!state.draft.photos[cat]) state.draft.photos[cat] = [];
+          state.draft.photos[cat].push(dataUrl);
+          await autosave();
+          render();
+          toast('Foto gespeichert ✓');
+        }catch(err){ toast('Foto konnte nicht geladen werden'); }
+      };
+    });
+    app.querySelectorAll('[data-rmphoto]').forEach(el=>{
+      el.onclick = async ()=>{
+        const cat = el.dataset.rmphoto, idx = parseInt(el.dataset.idx);
+        if(state.draft.photos && state.draft.photos[cat]) state.draft.photos[cat].splice(idx,1);
+        await autosave();
+        render();
+      };
+    });
+
+    const bem = document.getElementById('bemerkungenInput');
+    if(bem) bem.oninput = async e=>{ state.draft.bemerkungen = e.target.value; await autosave(); };
+
+    const submitBtn = document.getElementById('submitBtn');
+    if(submitBtn) submitBtn.onclick = async ()=>{
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Wird gespeichert …';
+      const u = DATA.units.find(x=>x.id===state.unitId);
+      const record = {
+        values: state.draft.values || {},
+        photos: state.draft.photos || {},
+        bemerkungen: state.draft.bemerkungen || '',
+        status: 'submitted',
+        submittedBy: state.profile.name,
+        submittedAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+      const result = await saveSubmission(u.id, record);
+      if(!result.ok){
+        if(result.reason === 'toolarge'){
+          const mb = (result.bytes/1024/1024).toFixed(1);
+          toast('⚠️ Zu viele/große Fotos in diesem Treppenhaus (' + mb + ' MB) – bitte ein Foto entfernen und nochmal absenden', 4500);
+        } else {
+          toast('⚠️ Speichern fehlgeschlagen: ' + (result.detail || 'unbekannter Fehler') + ' – bitte nochmal versuchen', 4500);
+        }
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Absenden';
+        return;
+      }
+      fireConfetti();
+      toast('Absenden erfolgreich ✓');
+      setTimeout(()=>{
+        state.draft = {};
+        go('overview');
+      }, 1600);
+    };
+    const reopenBtn = document.getElementById('reopenBtn');
+    if(reopenBtn) reopenBtn.onclick = async ()=>{
+      const u = DATA.units.find(x=>x.id===state.unitId);
+      const existing = state.submissions[u.id];
+      const record = {...existing, status:'progress', updatedAt: new Date().toISOString()};
+      await saveSubmission(u.id, record);
+      state.draft = {values:{...record.values}, photos: JSON.parse(JSON.stringify(record.photos||{})), bemerkungen: record.bemerkungen};
+      render();
+    };
+  }
+}
+
+function preserveFocus(el){
+  const val = el.value;
+  el.focus();
+  el.value = '';
+  el.value = val;
+}
+
+let autosaveTimer = null;
+async function autosave(){
+  clearTimeout(autosaveTimer);
+  return new Promise(resolve=>{
+    autosaveTimer = setTimeout(async ()=>{
+      const u = DATA.units.find(x=>x.id===state.unitId);
+      const existing = state.submissions[u.id];
+      if(existing && existing.status === 'submitted'){ resolve(); return; }
+      const record = {
+        values: state.draft.values || {},
+        photos: state.draft.photos || {},
+        bemerkungen: state.draft.bemerkungen || '',
+        status: 'progress',
+        submittedBy: existing ? existing.submittedBy : null,
+        submittedAt: existing ? existing.submittedAt : null,
+        updatedAt: new Date().toISOString(),
+      };
+      try{
+        const result = await saveSubmission(u.id, record);
+        if(result && !result.ok && result.reason === 'toolarge'){
+          const mb = (result.bytes/1024/1024).toFixed(1);
+          toast('⚠️ Fotos zu groß für dieses Treppenhaus (' + mb + ' MB) – bitte eines entfernen');
+        }
+      }catch(e){}
+      resolve();
+    }, 350);
+  });
+}
+
+init();
+</script>
+</body>
+</html>
